@@ -4,39 +4,444 @@
   <meta charset="UTF-8" />
   <title>DDCAS - My Page</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    html, body { margin: 0; padding: 0; width: 100%; height: 100%; background: #ffffff; }
-    body { display: flex; align-items: center; justify-content: center; }
-    #main-title {
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      font-size: 40px;
-      font-weight: 600;
-      color: #000;
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/"
     }
-    #container {
+  }
+  </script>
+  <style>
+    html, body { margin: 0; padding: 0; width: 100%; height: 100%; background: #0b0b0b; }
+    body {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      color: #ffffff;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: #0b0b0b;
+      overflow: hidden;
+    }
+    #brand {
+      position: absolute;
+      top: 12px;
+      left: 16px;
+      font-family: 'Arial Black', 'Impact', system-ui, sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: #ffffff;
+      text-decoration: none;
+      z-index: 5;
+    }
+    #brand:hover { opacity: 0.85; }
+    #left-panel {
+      position: relative;
+    }
+    #globe-container {
+      width: 100%;
+      height: 100%;
+    }
+    #right-panel {
       display: flex;
       flex-direction: column;
-      align-items: center;
       gap: 16px;
+      padding: 72px 24px 24px 16px;
+      box-sizing: border-box;
+      min-width: 360px;
+      height: 100vh;
     }
-    #back-3d {
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    .spacer {
+      flex: 1 1 0;
+    }
+    .spacer.top,
+    .spacer.bottom {
+      flex-grow: 2;
+    }
+    .panel {
+      background: rgba(10, 10, 10, 0.55);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 12px 14px;
+      display: grid;
+      gap: 10px;
+      min-height: 0;
+      backdrop-filter: blur(6px);
+      flex: 0 0 36vh;
+    }
+    #log-panel {
+      height: 36vh;
+      align-content: start;
+    }
+    #stats-panel {
+      height: 36vh;
+    }
+    .panel-title {
       font-size: 14px;
-      font-weight: 600;
-      padding: 8px 14px;
-      border-radius: 8px;
-      border: 1px solid #000;
-      background: #000;
-      color: #fff;
-      text-decoration: none;
+      font-weight: 700;
+      letter-spacing: 0.5px;
     }
-    #back-3d:hover { opacity: 0.85; }
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .panel-action {
+      background: transparent;
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 8px;
+      padding: 4px 8px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .panel-action:hover {
+      background: rgba(255,255,255,0.12);
+    }
+    #log-list {
+      overflow-y: auto;
+      display: grid;
+      gap: 8px;
+      min-height: 0;
+      align-content: start;
+    }
+    .log-item {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px;
+      padding: 8px 10px;
+      display: grid;
+      gap: 4px;
+      font-size: 12px;
+    }
+    .log-title {
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .log-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .log-delete {
+      background: transparent;
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 6px;
+      padding: 2px 6px;
+      font-size: 11px;
+      cursor: pointer;
+    }
+    .log-delete:hover {
+      background: rgba(255,255,255,0.12);
+    }
+    .log-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      opacity: 0.9;
+    }
+    .empty-state {
+      opacity: 0.7;
+      font-size: 12px;
+    }
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 13px;
+    }
+    .bar {
+      height: 10px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.15);
+      overflow: hidden;
+    }
+    .bar .fill {
+      height: 100%;
+      width: 0%;
+      background: #2aa3ff;
+      transition: width 0.2s ease;
+    }
   </style>
 </head>
 <body>
-  <div id="container">
-    <div id="main-title">My Page</div>
-    <a id="back-3d" href="./index_hong.html">Back to 3D</a>
+  <a id="brand" href="#" data-back>BACK</a>
+  <div id="left-panel">
+    <div id="globe-container"></div>
   </div>
+  <div id="right-panel">
+    <div class="spacer top"></div>
+    <section id="log-panel" class="panel">
+      <div class="panel-header">
+        <div class="panel-title">Flight Logs</div>
+        <button id="reset-logs" class="panel-action" type="button">Reset</button>
+      </div>
+      <div id="log-list"></div>
+    </section>
+    <div class="spacer mid"></div>
+    <section id="stats-panel" class="panel">
+      <div class="panel-title">Totals</div>
+      <div class="stat-row"><span>Total distance</span><span id="total-distance">0 km</span></div>
+      <div class="stat-row"><span>Total dose</span><span id="total-dose">0 uSv</span></div>
+      <div class="stat-row"><span>Public limit (1 mSv)</span><span id="limit-pct">0%</span></div>
+      <div class="bar"><div id="limit-fill" class="fill"></div></div>
+    </section>
+    <div class="spacer bottom"></div>
+  </div>
+
+  <script type="module">
+  import * as THREE from 'three';
+  import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+  const LOG_STORAGE_KEY = 'ddcas_flight_logs';
+  const CURRENT_USER_KEY = 'ddcas_current_user';
+  const logList = document.getElementById('log-list');
+  const totalDistanceEl = document.getElementById('total-distance');
+  const totalDoseEl = document.getElementById('total-dose');
+  const limitPctEl = document.getElementById('limit-pct');
+  const limitFill = document.getElementById('limit-fill');
+  const resetLogsButton = document.getElementById('reset-logs');
+  const backLink = document.querySelector('[data-back]');
+
+  function getCurrentUser() {
+    return localStorage.getItem(CURRENT_USER_KEY) || 'guest';
+  }
+
+  function readLogs() {
+    try {
+      const raw = localStorage.getItem(`${LOG_STORAGE_KEY}:${getCurrentUser()}`);
+      if (!raw) return [];
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (err) {
+      console.warn('Failed to read logs', err);
+      return [];
+    }
+  }
+
+  function formatDate(entry) {
+    if (entry.dateUTC) {
+      const date = new Date(entry.dateUTC);
+      if (!Number.isNaN(date.getTime())) {
+        return date.toLocaleString();
+      }
+    }
+    return entry.dateDisplay || '-';
+  }
+
+  function renderLogs(logs) {
+    logList.innerHTML = '';
+    if (!logs.length) {
+      const empty = document.createElement('div');
+      empty.className = 'empty-state';
+      empty.textContent = 'No logs yet.';
+      logList.appendChild(empty);
+      return;
+    }
+    for (const entry of logs) {
+      const item = document.createElement('div');
+      item.className = 'log-item';
+      const header = document.createElement('div');
+      header.className = 'log-header';
+      const title = document.createElement('div');
+      title.className = 'log-title';
+      title.textContent = `${entry.depart} → ${entry.arrive}`;
+      const delBtn = document.createElement('button');
+      delBtn.className = 'log-delete';
+      delBtn.type = 'button';
+      delBtn.textContent = 'Delete';
+      delBtn.addEventListener('click', () => {
+        removeLog(entry.id);
+      });
+      header.appendChild(title);
+      header.appendChild(delBtn);
+      const dateRow = document.createElement('div');
+      dateRow.className = 'log-row';
+      dateRow.innerHTML = `<span>Date</span><span>${formatDate(entry)}</span>`;
+      const distRow = document.createElement('div');
+      distRow.className = 'log-row';
+      distRow.innerHTML = `<span>Distance</span><span>${entry.distanceKm.toFixed(1)} km</span>`;
+      const timeRow = document.createElement('div');
+      timeRow.className = 'log-row';
+      timeRow.innerHTML = `<span>Time</span><span>${entry.hours.toFixed(2)} h</span>`;
+      const doseRow = document.createElement('div');
+      doseRow.className = 'log-row';
+      doseRow.innerHTML = `<span>Dose</span><span>${entry.doseMicroSv.toFixed(2)} uSv</span>`;
+      item.appendChild(header);
+      item.appendChild(dateRow);
+      item.appendChild(distRow);
+      item.appendChild(timeRow);
+      item.appendChild(doseRow);
+      logList.appendChild(item);
+    }
+  }
+
+  function updateTotals(logs) {
+    const totalDistance = logs.reduce((sum, entry) => sum + (entry.distanceKm || 0), 0);
+    const totalDose = logs.reduce((sum, entry) => sum + (entry.doseMicroSv || 0), 0);
+    const limit = 1000; // 1 mSv = 1000 uSv
+    const pct = limit > 0 ? Math.min(100, (totalDose / limit) * 100) : 0;
+    totalDistanceEl.textContent = `${totalDistance.toFixed(1)} km`;
+    totalDoseEl.textContent = `${totalDose.toFixed(2)} uSv`;
+    limitPctEl.textContent = `${pct.toFixed(1)}%`;
+    limitFill.style.width = `${pct}%`;
+  }
+
+  function latLonToVector3(lat, lon, radius) {
+    const u = (lon + 180) / 360;
+    const v = (90 - lat) / 180;
+    const theta = v * Math.PI;
+    const phi = u * Math.PI * 2;
+    const sinTheta = Math.sin(theta);
+    const x = -radius * Math.cos(phi) * sinTheta;
+    const y =  radius * Math.cos(theta);
+    const z =  radius * Math.sin(phi) * sinTheta;
+    return new THREE.Vector3(x, y, z);
+  }
+
+  function buildArcPoints(lat1, lon1, lat2, lon2, segments = 64) {
+    const start = latLonToVector3(lat1, lon1, 1).normalize();
+    const end = latLonToVector3(lat2, lon2, 1).normalize();
+    const dot = Math.min(1, Math.max(-1, start.dot(end)));
+    const omega = Math.acos(dot);
+    const sinOmega = Math.sin(omega);
+    const points = [];
+    for (let i = 0; i <= segments; i++) {
+      const t = i / segments;
+      let p;
+      if (sinOmega < 1e-6) {
+        p = start.clone().lerp(end, t).normalize();
+      } else {
+        const a = Math.sin((1 - t) * omega) / sinOmega;
+        const b = Math.sin(t * omega) / sinOmega;
+        p = start.clone().multiplyScalar(a).add(end.clone().multiplyScalar(b)).normalize();
+      }
+      p.multiplyScalar(1.02);
+      points.push(p);
+    }
+    return points;
+  }
+
+  function refreshUI() {
+    const logs = readLogs().sort((a, b) => {
+      const aTime = new Date(a.dateUTC || 0).getTime();
+      const bTime = new Date(b.dateUTC || 0).getTime();
+      return aTime - bTime;
+    });
+    renderLogs(logs);
+    updateTotals(logs);
+    drawRoutes(logs);
+  }
+
+  function writeLogs(logs) {
+    localStorage.setItem(`${LOG_STORAGE_KEY}:${getCurrentUser()}`, JSON.stringify(logs));
+  }
+
+  function removeLog(id) {
+    const logs = readLogs().filter((entry) => entry.id !== id);
+    writeLogs(logs);
+    refreshUI();
+  }
+
+  function resetLogs() {
+    writeLogs([]);
+    refreshUI();
+  }
+
+  const logs = readLogs().sort((a, b) => {
+    const aTime = new Date(a.dateUTC || 0).getTime();
+    const bTime = new Date(b.dateUTC || 0).getTime();
+    return aTime - bTime;
+  });
+
+  renderLogs(logs);
+  updateTotals(logs);
+
+  const container = document.getElementById('globe-container');
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 1000);
+  camera.position.set(0, 0, 4);
+
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setSize(container.clientWidth, container.clientHeight);
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  container.appendChild(renderer.domElement);
+
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.05;
+  controls.enablePan = false;
+  controls.enableZoom = false;
+
+  scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+  const sunLight = new THREE.DirectionalLight(0xffffff, 0.9);
+  sunLight.position.set(5, 3, 5);
+  scene.add(sunLight);
+
+  const textureLoader = new THREE.TextureLoader();
+  const earthTexture = textureLoader.load('./texture/8k_earth_daymap.jpg');
+  earthTexture.colorSpace = THREE.SRGBColorSpace;
+  const earth = new THREE.Mesh(
+    new THREE.SphereGeometry(1, 64, 64),
+    new THREE.MeshStandardMaterial({ map: earthTexture })
+  );
+  scene.add(earth);
+
+  const routeMaterial = new THREE.LineBasicMaterial({ color: 0x4fc3ff, transparent: true, opacity: 0.95 });
+  const markerGeometry = new THREE.SphereGeometry(0.025, 16, 16);
+  const startMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff7f });
+  const endMaterial = new THREE.MeshBasicMaterial({ color: 0xff5555 });
+  let routeGroup = new THREE.Group();
+  scene.add(routeGroup);
+
+  function drawRoutes(currentLogs) {
+    scene.remove(routeGroup);
+    routeGroup.traverse((obj) => {
+      if (obj.geometry) obj.geometry.dispose();
+      if (obj.material) obj.material.dispose();
+    });
+    routeGroup = new THREE.Group();
+    for (const entry of currentLogs) {
+      if (typeof entry.srcLat !== 'number') continue;
+      const points = buildArcPoints(entry.srcLat, entry.srcLon, entry.dstLat, entry.dstLon);
+      const geometry = new THREE.BufferGeometry().setFromPoints(points);
+      const line = new THREE.Line(geometry, routeMaterial);
+      routeGroup.add(line);
+
+      const startMarker = new THREE.Mesh(markerGeometry, startMaterial);
+      const endMarker = new THREE.Mesh(markerGeometry, endMaterial);
+      startMarker.position.copy(latLonToVector3(entry.srcLat, entry.srcLon, 1.02));
+      endMarker.position.copy(latLonToVector3(entry.dstLat, entry.dstLon, 1.02));
+      routeGroup.add(startMarker);
+      routeGroup.add(endMarker);
+    }
+    scene.add(routeGroup);
+  }
+  drawRoutes(logs);
+
+  function animate() {
+    requestAnimationFrame(animate);
+    controls.update();
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  window.addEventListener('resize', () => {
+    const { clientWidth, clientHeight } = container;
+    camera.aspect = clientWidth / clientHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(clientWidth, clientHeight);
+  });
+
+  resetLogsButton.addEventListener('click', resetLogs);
+  backLink.addEventListener('click', (event) => {
+    event.preventDefault();
+    window.history.back();
+  });
+  </script>
 </body>
 </html>

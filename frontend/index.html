@@ -6,50 +6,116 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     html, body { margin: 0; padding: 0; width: 100%; height: 100%; }
-    body { display: flex; align-items: center; justify-content: center; background: #ffffff; }
-    #main-title {
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #ffffff;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    }
+    #main-title {
       font-size: 64px;
       font-weight: 700;
       color: #000000;
       letter-spacing: 2px;
       text-transform: uppercase;
     }
+    #main-subtitle {
+      margin-top: 8px;
+      font-size: 18px;
+      font-weight: 500;
+      color: #222;
+      text-align: center;
+      line-height: 1.4;
+    }
     #main-container {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 16px;
+      gap: 14px;
+      text-align: center;
     }
-    #go-3d {
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      font-size: 16px;
-      font-weight: 600;
-      padding: 10px 16px;
+    #auth-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 6px;
+    }
+    .auth-button {
+      font-size: 14px;
+      font-weight: 700;
+      padding: 8px 14px;
       border-radius: 8px;
       border: 1px solid #000;
       background: #000;
       color: #fff;
-      text-decoration: none;
+      cursor: pointer;
     }
-    #go-3d:hover {
-      opacity: 0.85;
+    .auth-button.secondary {
+      background: #fff;
+      color: #000;
     }
-    #profile {
+    #login-form,
+    #signin-form {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 6px;
+      min-width: 240px;
+    }
+    #login-form label,
+    #signin-form label {
+      font-size: 12px;
+      text-align: left;
+      color: #333;
+    }
+    #login-form input,
+    #signin-form input {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    #login-submit,
+    #signin-submit {
+      background: #000;
+      color: #fff;
+      border: 1px solid #000;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 8px 14px;
+      border-radius: 8px;
+    }
+    #login-error,
+    #signin-error {
+      display: none;
+      font-size: 12px;
+      color: #cc0000;
+      text-align: left;
+    }
+    #top-left {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      z-index: 12;
+    }
+    #top-right {
       position: fixed;
       top: 16px;
       right: 16px;
-      z-index: 10;
+      z-index: 12;
       display: flex;
       align-items: center;
       justify-content: flex-end;
     }
-    #profile button {
+    #menuBtn,
+    #profileBtn {
       width: 32px;
       height: 32px;
       border-radius: 50%;
-      border: 1px solid rgba(255,255,255,0.3);
-      background: rgba(0,0,0,0.7);
+      border: 1px solid #000;
+      background: #000;
       color: #fff;
       cursor: pointer;
       font-size: 16px;
@@ -58,10 +124,10 @@
       align-items: center;
       justify-content: center;
     }
-    #profile-menu {
+    #profile-menu,
+    #nav-menu {
       position: fixed;
       top: 56px;
-      right: 16px;
       background: #000000;
       color: #fff;
       border-radius: 10px;
@@ -71,14 +137,13 @@
       gap: 6px;
       border: 1px solid rgba(255,255,255,0.15);
       z-index: 11;
-      min-width: 140px;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      min-width: 160px;
       font-size: 14px;
     }
-    #profile-menu.expanded {
-      min-width: 220px;
-    }
-    #profile-menu button {
+    #profile-menu { right: 16px; }
+    #nav-menu { left: 16px; }
+    #profile-menu button,
+    #nav-menu button {
       background: transparent;
       color: #fff;
       border: none;
@@ -88,63 +153,44 @@
       cursor: pointer;
       font-size: 14px;
     }
-    #profile-menu a {
-      background: transparent;
-      color: #fff;
-      text-decoration: none;
-      text-align: left;
-      padding: 6px 8px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 14px;
-      display: block;
-    }
-    #profile-menu button:hover {
+    #profile-menu button:hover,
+    #nav-menu button:hover {
       background: rgba(255,255,255,0.12);
     }
-    #profile-menu a:hover {
-      background: rgba(255,255,255,0.12);
-    }
-    #login-form {
-      display: none;
-      flex-direction: column;
-      gap: 8px;
-      padding: 6px 2px 2px;
-    }
-    #login-form label {
-      font-size: 12px;
-      opacity: 0.8;
-    }
-    #login-form input {
-      width: 100%;
-      padding: 6px 8px;
-      border-radius: 6px;
-      border: 1px solid rgba(255,255,255,0.25);
-      background: #111;
-      color: #fff;
+    .submenu {
+      padding-left: 18px;
       font-size: 13px;
-      box-sizing: border-box;
+      opacity: 0.95;
     }
-    #login-submit {
-      background: #2aa3ff;
-      color: #000;
-      border: none;
-      font-weight: 700;
-    }
-    #login-error {
-      display: none;
-      color: #ff8080;
-      font-size: 12px;
+    .hidden {
+      display: none !important;
     }
   </style>
 </head>
 <body>
-  <div id="profile">
-    <button id="profileBtn" aria-label="Profile">👤</button>
+  <div id="top-left" class="hidden">
+    <button id="menuBtn" aria-label="Menu">☰</button>
+  </div>
+  <div id="top-right" class="hidden">
+    <button id="profileBtn" aria-label="Profile">J</button>
   </div>
   <div id="profile-menu" aria-label="Profile menu">
-    <button id="login-toggle" type="button">Log in</button>
-    <button id="signin-button" type="button">Sign in</button>
+    <button id="my-page-link" type="button">My Page</button>
+    <button id="logout-button" type="button">Log out</button>
+  </div>
+  <div id="nav-menu" aria-label="Navigation menu">
+    <button type="button">About Us</button>
+    <button type="button">Information</button>
+    <button type="button">Casting&Alert</button>
+    <button id="flight-link" class="submenu" type="button">Flight</button>
+  </div>
+  <div id="main-container">
+    <div id="main-title">DDCAS</div>
+    <div id="main-subtitle">Dynamic Disaster<br/>Casting & Alert System</div>
+    <div id="auth-actions">
+      <button id="login-toggle" class="auth-button" type="button">Log in</button>
+      <button id="signin-button" class="auth-button secondary" type="button">Sign in</button>
+    </div>
     <form id="login-form">
       <div>
         <label for="login-id">ID</label>
@@ -157,91 +203,176 @@
       <button id="login-submit" type="submit">Log in</button>
       <div id="login-error">ID 또는 Password가 올바르지 않습니다.</div>
     </form>
-    <a id="my-page-link" href="./my_page.html">My Page</a>
-    <button id="logout-button" type="button">Log out</button>
-  </div>
-  <div id="main-container">
-    <div id="main-title">DDCAS</div>
-    <a id="go-3d" href="./index_hong.html">Go to 3D Earth</a>
+    <form id="signin-form">
+      <div>
+        <label for="signin-id">ID</label>
+        <input id="signin-id" type="text" autocomplete="username" />
+      </div>
+      <div>
+        <label for="signin-password">Password</label>
+        <input id="signin-password" type="password" autocomplete="new-password" />
+      </div>
+      <button id="signin-submit" type="submit">Sign in</button>
+      <div id="signin-error">이미 있는 ID입니다.</div>
+    </form>
   </div>
   <script>
-    const profileBtn = document.getElementById('profileBtn');
-    const profileMenu = document.getElementById('profile-menu');
     const loginToggle = document.getElementById('login-toggle');
-    const loginForm = document.getElementById('login-form');
     const loginId = document.getElementById('login-id');
     const loginPassword = document.getElementById('login-password');
     const loginError = document.getElementById('login-error');
     const signinButton = document.getElementById('signin-button');
+    const signinForm = document.getElementById('signin-form');
+    const signinId = document.getElementById('signin-id');
+    const signinPassword = document.getElementById('signin-password');
+    const signinError = document.getElementById('signin-error');
+    const loginForm = document.getElementById('login-form');
+    const authActions = document.getElementById('auth-actions');
+    const profileBtn = document.getElementById('profileBtn');
+    const profileMenu = document.getElementById('profile-menu');
+    const menuBtn = document.getElementById('menuBtn');
+    const navMenu = document.getElementById('nav-menu');
     const myPageLink = document.getElementById('my-page-link');
     const logoutButton = document.getElementById('logout-button');
+    const flightLink = document.getElementById('flight-link');
+    const topLeft = document.getElementById('top-left');
+    const topRight = document.getElementById('top-right');
 
     const ACCOUNT_ID = 'JEJUAWS';
     const ACCOUNT_PASSWORD = '1111';
+    const LOGIN_STORAGE_KEY = 'ddcas_logged_in';
+    const CURRENT_USER_KEY = 'ddcas_current_user';
+    const ACCOUNTS_KEY = 'ddcas_accounts';
     let isLoggedIn = false;
 
-    function setLoggedInUI() {
-      const showLoggedIn = isLoggedIn;
-      loginToggle.style.display = showLoggedIn ? 'none' : 'block';
-      signinButton.style.display = showLoggedIn ? 'none' : 'block';
-      myPageLink.style.display = showLoggedIn ? 'block' : 'none';
-      logoutButton.style.display = showLoggedIn ? 'block' : 'none';
-      if (!showLoggedIn) {
-        loginForm.style.display = 'none';
-        profileMenu.classList.remove('expanded');
+    function getAccounts() {
+      try {
+        const raw = localStorage.getItem(ACCOUNTS_KEY);
+        if (!raw) return [{ id: ACCOUNT_ID, password: ACCOUNT_PASSWORD }];
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed) || parsed.length === 0) {
+          return [{ id: ACCOUNT_ID, password: ACCOUNT_PASSWORD }];
+        }
+        return parsed;
+      } catch (err) {
+        return [{ id: ACCOUNT_ID, password: ACCOUNT_PASSWORD }];
       }
     }
 
-    setLoggedInUI();
+    function setAccounts(accounts) {
+      localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(accounts));
+    }
 
-    profileBtn.addEventListener('click', () => {
-      const isOpen = profileMenu.style.display === 'flex';
-      profileMenu.style.display = isOpen ? 'none' : 'flex';
-    });
+    function setLoggedInUI() {
+      if (isLoggedIn) {
+        authActions.classList.add('hidden');
+        loginForm.style.display = 'none';
+        signinForm.style.display = 'none';
+        topLeft.classList.remove('hidden');
+        topRight.classList.remove('hidden');
+      } else {
+        authActions.classList.remove('hidden');
+        loginForm.style.display = 'none';
+        signinForm.style.display = 'none';
+        topLeft.classList.add('hidden');
+        topRight.classList.add('hidden');
+        profileMenu.style.display = 'none';
+        navMenu.style.display = 'none';
+      }
+    }
+
+    function syncLoginState() {
+      const stored = localStorage.getItem(LOGIN_STORAGE_KEY);
+      isLoggedIn = stored === 'true';
+      setLoggedInUI();
+    }
+
+    syncLoginState();
 
     loginToggle.addEventListener('click', () => {
-      if (isLoggedIn) {
-        return;
-      }
-      const willShow = loginForm.style.display !== 'flex';
-      loginForm.style.display = willShow ? 'flex' : 'none';
-      profileMenu.classList.toggle('expanded', willShow);
-      if (willShow) {
-        loginId.focus();
-      }
+      authActions.classList.add('hidden');
+      loginForm.style.display = 'flex';
+      signinForm.style.display = 'none';
+      loginId.focus();
+    });
+
+    signinButton.addEventListener('click', () => {
+      authActions.classList.add('hidden');
+      signinForm.style.display = 'flex';
+      loginForm.style.display = 'none';
+      signinId.focus();
     });
 
     loginForm.addEventListener('submit', (event) => {
       event.preventDefault();
       const idValue = loginId.value.trim();
       const passwordValue = loginPassword.value;
-      const ok = idValue === ACCOUNT_ID && passwordValue === ACCOUNT_PASSWORD;
+      const accounts = getAccounts();
+      const ok = accounts.some((acc) => acc.id === idValue && acc.password === passwordValue);
       if (!ok) {
         loginError.style.display = 'block';
         return;
       }
       loginError.style.display = 'none';
       isLoggedIn = true;
-      profileBtn.textContent = 'J';
+      localStorage.setItem(LOGIN_STORAGE_KEY, 'true');
+      localStorage.setItem(CURRENT_USER_KEY, idValue);
       setLoggedInUI();
-      loginForm.style.display = 'none';
-      profileMenu.classList.remove('expanded');
-      profileMenu.style.display = 'none';
       loginId.value = '';
       loginPassword.value = '';
     });
 
+    signinForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const idValue = signinId.value.trim();
+      const passwordValue = signinPassword.value;
+      const accounts = getAccounts();
+      const exists = accounts.some((acc) => acc.id === idValue);
+      if (exists || idValue === '') {
+        signinError.style.display = 'block';
+        return;
+      }
+      signinError.style.display = 'none';
+      accounts.push({ id: idValue, password: passwordValue });
+      setAccounts(accounts);
+      signinId.value = '';
+      signinPassword.value = '';
+      authActions.classList.remove('hidden');
+      signinForm.style.display = 'none';
+    });
+
+    profileBtn.addEventListener('click', () => {
+      const isOpen = profileMenu.style.display === 'flex';
+      profileMenu.style.display = isOpen ? 'none' : 'flex';
+    });
+
+    menuBtn.addEventListener('click', () => {
+      const isOpen = navMenu.style.display === 'flex';
+      navMenu.style.display = isOpen ? 'none' : 'flex';
+    });
+
+    myPageLink.addEventListener('click', () => {
+      window.location.href = './my_page.html';
+    });
+
+    flightLink.addEventListener('click', () => {
+      window.location.href = './index_hong.html';
+    });
+
     logoutButton.addEventListener('click', () => {
       isLoggedIn = false;
-      profileBtn.textContent = '👤';
+      localStorage.removeItem(LOGIN_STORAGE_KEY);
+      localStorage.removeItem(CURRENT_USER_KEY);
       setLoggedInUI();
-      profileMenu.style.display = 'none';
       window.location.href = './index.html';
     });
 
     document.addEventListener('click', (event) => {
       if (!profileMenu.contains(event.target) && !profileBtn.contains(event.target)) {
         profileMenu.style.display = 'none';
+      }
+      if (!navMenu.contains(event.target) && !menuBtn.contains(event.target)) {
+        navMenu.style.display = 'none';
       }
     });
   </script>
