@@ -17,9 +17,126 @@
   <style>
     html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; }
     canvas { display: block; }
+    #ui {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: rgba(0, 0, 0, 0.6);
+      color: #ffffff;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      font-size: 14px;
+      display: grid;
+      gap: 8px;
+      z-index: 10;
+      backdrop-filter: blur(6px);
+    }
+    #ui .row {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+    }
+    #ui .field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    #ui .field label {
+      font-size: 12px;
+      opacity: 0.8;
+    }
+    #ui .label-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+    #ui .label-dot.green { background: #00ff7f; }
+    #ui .label-dot.red { background: #ff5555; }
+    #time-ui {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      background: rgba(0, 0, 0, 0.6);
+      color: #ffffff;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      font-size: 14px;
+      display: grid;
+      gap: 6px;
+      z-index: 10;
+      backdrop-filter: blur(6px);
+    }
+    #time-ui label {
+      font-size: 12px;
+      opacity: 0.8;
+    }
+    #time-ui input {
+      font-size: 14px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid #444;
+      background: #111;
+      color: #fff;
+    }
+    #time-ui .time-row .sep {
+      opacity: 0.7;
+    }
+    #time-ui input {
+      font-size: 14px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid #444;
+      background: #111;
+      color: #fff;
+    }
+    #ui select, #ui button {
+      font-size: 14px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid #444;
+      background: #111;
+      color: #fff;
+    }
+    #ui button {
+      cursor: pointer;
+      border-color: #2aa3ff;
+      background: #2aa3ff;
+      color: #000;
+      font-weight: 600;
+    }
+    #ui .arrow {
+      opacity: 0.7;
+    }
   </style>
 </head>
 <body>
+<div id="time-ui">
+  <label for="datetimeInput">Date & Time (GST)</label>
+  <input id="datetimeInput" type="datetime-local" lang="en" />
+</div>
+<div id="ui">
+  <div class="row">
+    <div class="field">
+      <label for="departSelect"><span class="label-dot green"></span>Depart</label>
+      <select id="departSelect">
+        <option value="">Depart</option>
+      </select>
+    </div>
+    <span class="arrow">→</span>
+    <div class="field">
+      <label for="arriveSelect"><span class="label-dot red"></span>Arrive</label>
+      <select id="arriveSelect">
+        <option value="">Arrive</option>
+      </select>
+    </div>
+    <button id="showBtn">Show</button>
+  </div>
+</div>
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -61,7 +178,6 @@ textureLoader.load('./texture/2k_stars.jpg', (texture) => {
 // LIGHTS
 scene.add(new THREE.AmbientLight(0xffffff, 0.4));
 const sunLight = new THREE.DirectionalLight(0xffffff, 1);
-sunLight.position.set(5, 3, 5);
 scene.add(sunLight);
 
 // EARTH
@@ -96,15 +212,253 @@ function latLonToVector3(lat, lon, radius) {
   return new THREE.Vector3(x, y, z);
 }
 
-const marker = new THREE.Mesh(
-  new THREE.SphereGeometry(0.02, 16, 16),
-  new THREE.MeshBasicMaterial({ color: 0xff0000 })
-);
+function latLonToUnitVector(lat, lon) {
+  return latLonToVector3(lat, lon, 1).normalize();
+}
 
-marker.position.copy(
-  latLonToVector3(37.5665, 126.9780, EARTH_RADIUS + 0.01)
+function getSolarDeclination(dayOfYear) {
+  // Approximation in degrees
+  return 23.44 * Math.sin(((2 * Math.PI) / 365) * (dayOfYear - 81));
+}
+
+function dayOfYearUTC(date) {
+  const start = Date.UTC(date.getUTCFullYear(), 0, 0);
+  const now = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+  return Math.floor((now - start) / 86400000);
+}
+
+function updateSunFromDate(date) {
+  // Subsolar latitude (declination)
+  const doy = dayOfYearUTC(date);
+  const declination = getSolarDeclination(doy);
+
+  // Subsolar longitude from UTC time (approx)
+  const hours =
+    date.getUTCHours() +
+    date.getUTCMinutes() / 60 +
+    date.getUTCSeconds() / 3600;
+  const subsolarLon = 180 - (hours * 15);
+
+  const sunDir = latLonToUnitVector(declination, subsolarLon);
+  sunLight.position.copy(sunDir.multiplyScalar(5));
+  sunLight.target.position.set(0, 0, 0);
+  sunLight.target.updateMatrixWorld();
+}
+
+const startMarker = new THREE.Mesh(
+  new THREE.SphereGeometry(0.015, 16, 16),
+  new THREE.MeshBasicMaterial({ color: 0x00ff7f })
 );
-scene.add(marker);
+const endMarker = new THREE.Mesh(
+  new THREE.SphereGeometry(0.015, 16, 16),
+  new THREE.MeshBasicMaterial({ color: 0xff5555 })
+);
+startMarker.visible = false;
+endMarker.visible = false;
+scene.add(startMarker);
+scene.add(endMarker);
+
+let currentRouteLine = null;
+
+function greatCircleKm(lat1, lon1, lat2, lon2) {
+  const r = 6371.0088;
+  const toRad = (v) => (v * Math.PI) / 180;
+  const phi1 = toRad(lat1);
+  const phi2 = toRad(lat2);
+  const dPhi = toRad(lat2 - lat1);
+  const dLambda = toRad(lon2 - lon1);
+  const a = Math.sin(dPhi / 2) ** 2 +
+    Math.cos(phi1) * Math.cos(phi2) * Math.sin(dLambda / 2) ** 2;
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return r * c;
+}
+
+function buildArcPoints(lat1, lon1, lat2, lon2, segments = 64) {
+  const start = latLonToVector3(lat1, lon1, 1).normalize();
+  const end = latLonToVector3(lat2, lon2, 1).normalize();
+  const dot = Math.min(1, Math.max(-1, start.dot(end)));
+  const omega = Math.acos(dot);
+  const sinOmega = Math.sin(omega);
+  const points = [];
+  for (let i = 0; i <= segments; i++) {
+    const t = i / segments;
+    let p;
+    if (sinOmega < 1e-6) {
+      p = start.clone().lerp(end, t).normalize();
+    } else {
+      const a = Math.sin((1 - t) * omega) / sinOmega;
+      const b = Math.sin(t * omega) / sinOmega;
+      p = start.clone().multiplyScalar(a).add(end.clone().multiplyScalar(b)).normalize();
+    }
+    p.multiplyScalar(EARTH_RADIUS + 0.02);
+    points.push(p);
+  }
+  return points;
+}
+
+function drawRoute(route) {
+  if (currentRouteLine) {
+    scene.remove(currentRouteLine);
+    currentRouteLine.geometry.dispose();
+    currentRouteLine.material.dispose();
+    currentRouteLine = null;
+  }
+
+  const points = buildArcPoints(route.srcLat, route.srcLon, route.dstLat, route.dstLon);
+  const routeGeometry = new THREE.BufferGeometry().setFromPoints(points);
+  const routeMaterial = new THREE.LineBasicMaterial({ color: 0x00ffff });
+  currentRouteLine = new THREE.Line(routeGeometry, routeMaterial);
+  scene.add(currentRouteLine);
+
+  startMarker.position.copy(latLonToVector3(route.srcLat, route.srcLon, EARTH_RADIUS + 0.02));
+  endMarker.position.copy(latLonToVector3(route.dstLat, route.dstLon, EARTH_RADIUS + 0.02));
+  startMarker.visible = true;
+  endMarker.visible = true;
+}
+
+function focusOnRoute(route) {
+  const mid = latLonToVector3(
+    (route.srcLat + route.dstLat) / 2,
+    (route.srcLon + route.dstLon) / 2,
+    1
+  ).normalize();
+  const distance = 4;
+  camera.position.copy(mid.multiplyScalar(distance));
+  camera.up.set(0, 1, 0); // keep north pole up
+  controls.target.set(0, 0, 0);
+  controls.update();
+}
+
+// UI + DATA
+const departSelect = document.getElementById('departSelect');
+const arriveSelect = document.getElementById('arriveSelect');
+const showBtn = document.getElementById('showBtn');
+const datetimeInput = document.getElementById('datetimeInput');
+
+function parseDateTimeLocalAsUTC(value) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/.exec(value);
+  if (!match) return null;
+  const [, y, m, d, hh, mm] = match.map(Number);
+  return new Date(Date.UTC(y, m - 1, d, hh, mm, 0));
+}
+
+function setInitialDateTime() {
+  const now = new Date();
+  const pad = (n) => String(n).padStart(2, '0');
+  const utcValue = `${now.getUTCFullYear()}-${pad(now.getUTCMonth() + 1)}-${pad(now.getUTCDate())}T${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}`;
+  datetimeInput.value = utcValue;
+  updateSunFromDate(now);
+}
+
+datetimeInput.addEventListener('change', () => {
+  const value = datetimeInput.value;
+  if (!value) return;
+  const date = parseDateTimeLocalAsUTC(value);
+  if (date && !Number.isNaN(date.getTime())) {
+    updateSunFromDate(date);
+  }
+});
+
+setInitialDateTime();
+
+let data;
+try {
+  const res = await fetch('./data/capitals_routes.json');
+  if (!res.ok) {
+    throw new Error(`Failed to load data: ${res.status}`);
+  }
+  data = await res.json();
+} catch (err) {
+  console.error(err);
+  window.alert('데이터를 불러오지 못했습니다. 로컬 서버(http://localhost:8001)로 열어주세요.');
+  throw err;
+}
+
+const allCapitals = data.capitals.slice().sort();
+const capitalRoutes = new Map();
+const reverseCapitalRoutes = new Map();
+
+for (const route of data.routes) {
+  const srcCapital = data.capitalByAirport[route.src];
+  const dstCapital = data.capitalByAirport[route.dst];
+  if (!srcCapital || !dstCapital) continue;
+
+  if (!capitalRoutes.has(srcCapital)) capitalRoutes.set(srcCapital, new Set());
+  if (!reverseCapitalRoutes.has(dstCapital)) reverseCapitalRoutes.set(dstCapital, new Set());
+  capitalRoutes.get(srcCapital).add(dstCapital);
+  reverseCapitalRoutes.get(dstCapital).add(srcCapital);
+}
+
+function rebuildSelect(select, options, selectedValue, placeholder) {
+  select.innerHTML = '';
+  const first = new Option(placeholder, '');
+  first.selected = selectedValue === '';
+  select.add(first);
+  for (const name of options) {
+    const opt = new Option(name, name);
+    if (name === selectedValue) opt.selected = true;
+    select.add(opt);
+  }
+}
+
+function updateArriveOptions() {
+  const depart = departSelect.value;
+  const allowed = depart ? Array.from(capitalRoutes.get(depart) || []) : allCapitals;
+  allowed.sort();
+  const current = arriveSelect.value;
+  rebuildSelect(arriveSelect, allowed, allowed.includes(current) ? current : '', 'Arrive');
+}
+
+function updateDepartOptions() {
+  const arrive = arriveSelect.value;
+  const allowed = arrive ? Array.from(reverseCapitalRoutes.get(arrive) || []) : allCapitals;
+  allowed.sort();
+  const current = departSelect.value;
+  rebuildSelect(departSelect, allowed, allowed.includes(current) ? current : '', 'Depart');
+}
+
+rebuildSelect(departSelect, allCapitals, '', 'Depart');
+rebuildSelect(arriveSelect, allCapitals, '', 'Arrive');
+
+departSelect.addEventListener('change', () => {
+  updateArriveOptions();
+});
+
+arriveSelect.addEventListener('change', () => {
+  updateDepartOptions();
+});
+
+showBtn.addEventListener('click', () => {
+  const depart = departSelect.value;
+  const arrive = arriveSelect.value;
+  if (!depart || !arrive) {
+    window.alert('depart와 arrive를 모두 선택해주세요.');
+    return;
+  }
+
+  let best = null;
+  let bestDist = Infinity;
+
+  for (const route of data.routes) {
+    const srcCapital = data.capitalByAirport[route.src];
+    const dstCapital = data.capitalByAirport[route.dst];
+    if (srcCapital !== depart || dstCapital !== arrive) continue;
+
+    const dist = greatCircleKm(route.srcLat, route.srcLon, route.dstLat, route.dstLon);
+    if (dist < bestDist) {
+      bestDist = dist;
+      best = route;
+    }
+  }
+
+  if (!best) {
+    window.alert('선택한 수도 간에 노선이 없습니다.');
+    return;
+  }
+
+  drawRoute(best);
+  focusOnRoute(best);
+});
 
 // LOOP
 function animate() {
