@@ -56,10 +56,25 @@
     }
     #ui .label-dot.green { background: #00ff7f; }
     #ui .label-dot.red { background: #ff5555; }
+    #brand {
+      position: absolute;
+      top: 12px;
+      left: 16px;
+      font-family: 'Arial Black', 'Impact', system-ui, sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: #ffffff;
+      text-decoration: none;
+      z-index: 12;
+    }
+    #brand:hover {
+      opacity: 0.85;
+    }
     #time-ui {
       position: absolute;
-      top: 16px;
-      left: 16px;
+      bottom: 16px;
+      right: 16px;
       background: rgba(0, 0, 0, 0.6);
       color: #ffffff;
       padding: 10px 12px;
@@ -83,6 +98,9 @@
       background: #111;
       color: #fff;
     }
+    #time-ui input::-webkit-calendar-picker-indicator {
+      filter: invert(1);
+    }
     #ui select, #ui button {
       font-size: 14px;
       padding: 4px 8px;
@@ -101,6 +119,67 @@
     #ui .arrow {
       opacity: 0.7;
     }
+    #profile {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+    #profile button {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      cursor: pointer;
+      font-size: 16px;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #profile-menu {
+      position: absolute;
+      top: 56px;
+      right: 16px;
+      background: #000000;
+      color: #fff;
+      border-radius: 10px;
+      padding: 8px;
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      border: 1px solid rgba(255,255,255,0.15);
+      z-index: 11;
+      min-width: 140px;
+    }
+    #profile-menu button {
+      background: transparent;
+      color: #fff;
+      border: none;
+      text-align: left;
+      padding: 6px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    #profile-menu .menu-link {
+      background: transparent;
+      color: #fff;
+      text-decoration: none;
+      text-align: left;
+      padding: 6px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: block;
+    }
+    #profile-menu button:hover {
+      background: rgba(255,255,255,0.12);
+    }
+    #profile-menu .menu-link:hover {
+      background: rgba(255,255,255,0.12);
+    }
 
     /* === NEW: Radiation legend === */
     #legend {
@@ -111,11 +190,12 @@
       border-top: 1px solid rgba(255,255,255,0.15);
     }
     #legend .title {
-      font-size: 12px;
-      opacity: 0.85;
+      font-size: 14px;
+      font-weight: 600;
+      opacity: 0.95;
     }
     #legend .bar {
-      width: 240px;
+      width: 100%;
       height: 12px;
       border-radius: 8px;
       border: 1px solid rgba(255,255,255,0.22);
@@ -127,26 +207,104 @@
       font-size: 12px;
       opacity: 0.85;
     }
+    #route-info {
+      margin-top: 6px;
+      display: grid;
+      gap: 4px;
+      padding-top: 6px;
+      border-top: 1px solid rgba(255,255,255,0.15);
+      font-size: 12px;
+      opacity: 0.9;
+    }
+    #route-info .section-title {
+      font-size: 14px;
+      font-weight: 600;
+      opacity: 0.95;
+      margin-bottom: 2px;
+    }
+    #route-info .row {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    #route-info .button-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 4px;
+    }
+    #route-info button {
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      cursor: pointer;
+    }
+    #log-info {
+      margin-top: 6px;
+      display: grid;
+      gap: 6px;
+      padding-top: 6px;
+      border-top: 1px solid rgba(255,255,255,0.15);
+      font-size: 12px;
+    }
+    #log-info .section-title {
+      font-size: 14px;
+      font-weight: 600;
+      opacity: 0.95;
+      margin-bottom: 2px;
+    }
+    #log-info .annual-row {
+      font-size: 13px;
+      font-weight: 600;
+    }
+    #log-info .bar {
+      height: 10px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.15);
+      overflow: hidden;
+    }
+    #log-info .fill {
+      height: 100%;
+      background: #2aa3ff;
+      width: 0%;
+      transition: width 0.2s ease;
+    }
+    #log-info .row {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      opacity: 0.9;
+    }
   </style>
 </head>
 <body>
+<a id="brand" href="./index.html">DDCAS</a>
 <div id="time-ui">
   <label for="datetimeInput">Date & Time (GST)</label>
   <input id="datetimeInput" type="datetime-local" lang="en" />
 </div>
 <div id="ui">
+  <div id="profile">
+    <button id="profileBtn" aria-label="Profile">👤</button>
+  </div>
+  <div id="profile-menu">
+    <a class="menu-link" href="./my_page.html">My Page</a>
+    <button type="button">Logout</button>
+  </div>
   <div class="row">
     <div class="field">
       <label for="departSelect"><span class="label-dot green"></span>Depart</label>
       <select id="departSelect">
-        <option value="">Depart</option>
+        <option value="">Select</option>
       </select>
     </div>
     <span class="arrow">→</span>
     <div class="field">
       <label for="arriveSelect"><span class="label-dot red"></span>Arrive</label>
       <select id="arriveSelect">
-        <option value="">Arrive</option>
+        <option value="">Select</option>
       </select>
     </div>
     <button id="showBtn">Show</button>
@@ -154,11 +312,37 @@
 
   <!-- NEW: legend -->
   <div id="legend">
-    <div class="title">Radiation (Sv) overlay</div>
+    <div class="title">Radiation overlay</div>
     <div class="bar" aria-label="radiation color legend"></div>
     <div class="labels">
       <span id="legendMin">min</span>
       <span id="legendMax">max</span>
+    </div>
+    <div id="route-info">
+      <div class="section-title">Flight Information</div>
+      <div class="row"><span>Average speed</span><span id="routeSpeed">900 km/h</span></div>
+      <div class="row"><span>Distance</span><span id="routeDistance">-</span></div>
+      <div class="row"><span>Flight time</span><span id="routeTime">-</span></div>
+      <div class="row"><span>Total dose</span><span id="routeDose">-</span></div>
+      <div class="button-row"><button id="addToLogBtn">Add to log</button></div>
+    </div>
+    <div id="log-info">
+      <div class="section-title">Annual total</div>
+      <div class="row annual-row"><span>Total</span><span id="annualDose">0.00 uSv</span></div>
+      <div class="row">
+        <label style="display:flex; align-items:center; gap:6px;">
+          <input type="checkbox" id="toggleRadiation" checked />
+          Radiation overlay
+        </label>
+      </div>
+      <div>
+        <div class="row"><span>Public limit (1 mSv)</span><span id="publicPct">0%</span></div>
+        <div class="bar"><div id="publicFill" class="fill"></div></div>
+      </div>
+      <div>
+        <div class="row"><span>Crew limit (6 mSv)</span><span id="crewPct">0%</span></div>
+        <div class="bar"><div id="crewFill" class="fill"></div></div>
+      </div>
     </div>
   </div>
 </div>
@@ -209,7 +393,7 @@ scene.add(sunLight);
 // EARTH
 const EARTH_RADIUS = 1;
 const earthGeometry = new THREE.SphereGeometry(EARTH_RADIUS, 64, 64);
-const earthTexture = textureLoader.load('./texture/2k_earth_daymap.jpg');
+const earthTexture = textureLoader.load('./texture/8k_earth_daymap.jpg');
 earthTexture.colorSpace = THREE.SRGBColorSpace;
 
 const earth = new THREE.Mesh(
@@ -315,6 +499,59 @@ function buildArcPoints(lat1, lon1, lat2, lon2, segments = 64) {
   return points;
 }
 
+function vectorToLatLon(v) {
+  const lat = 90 - Math.acos(v.y) * 180 / Math.PI;
+  const lon = Math.atan2(v.z, -v.x) * 180 / Math.PI;
+  return { lat, lon };
+}
+
+function sampleRadiationAt(grid, lat, lon) {
+  if (!grid) return null;
+  const { width, height, latStep, lonStep, values } = grid;
+  let wrappedLon = lon;
+  if (wrappedLon < -180) wrappedLon += 360;
+  if (wrappedLon >= 180) wrappedLon -= 360;
+  const x = Math.min(width - 1, Math.max(0, Math.floor((wrappedLon + 180) / lonStep)));
+  const y = Math.min(height - 1, Math.max(0, Math.floor((90 - lat) / latStep)));
+  return values[y * width + x];
+}
+
+function computeRouteDose(route, grid) {
+  const distanceKm = greatCircleKm(route.srcLat, route.srcLon, route.dstLat, route.dstLon);
+  const hours = distanceKm / 900;
+  const segments = Math.max(64, Math.ceil(distanceKm / 200));
+
+  const start = latLonToVector3(route.srcLat, route.srcLon, 1).normalize();
+  const end = latLonToVector3(route.dstLat, route.dstLon, 1).normalize();
+  const dot = Math.min(1, Math.max(-1, start.dot(end)));
+  const omega = Math.acos(dot);
+  const sinOmega = Math.sin(omega);
+
+  let totalMicroSv = 0;
+  for (let i = 0; i <= segments; i++) {
+    const t = i / segments;
+    let p;
+    if (sinOmega < 1e-6) {
+      p = start.clone().lerp(end, t).normalize();
+    } else {
+      const a = Math.sin((1 - t) * omega) / sinOmega;
+      const b = Math.sin(t * omega) / sinOmega;
+      p = start.clone().multiplyScalar(a).add(end.clone().multiplyScalar(b)).normalize();
+    }
+    const { lat, lon } = vectorToLatLon(p);
+    const rate = sampleRadiationAt(grid, lat, lon);
+    if (rate != null) {
+      totalMicroSv += rate;
+    }
+  }
+
+  const avgRate = totalMicroSv / (segments + 1);
+  const doseMicroSv = avgRate * hours;
+  const doseSv = doseMicroSv * 1e-6;
+
+  return { distanceKm, hours, doseMicroSv, doseSv };
+}
+
 function drawRoute(route) {
   if (currentRouteLine) {
     scene.remove(currentRouteLine);
@@ -353,10 +590,22 @@ const departSelect = document.getElementById('departSelect');
 const arriveSelect = document.getElementById('arriveSelect');
 const showBtn = document.getElementById('showBtn');
 const datetimeInput = document.getElementById('datetimeInput');
+const profileBtn = document.getElementById('profileBtn');
+const profileMenu = document.getElementById('profile-menu');
 
 // NEW: legend elements
 const legendMinEl = document.getElementById('legendMin');
 const legendMaxEl = document.getElementById('legendMax');
+const routeDistanceEl = document.getElementById('routeDistance');
+const routeTimeEl = document.getElementById('routeTime');
+const routeDoseEl = document.getElementById('routeDose');
+const addToLogBtn = document.getElementById('addToLogBtn');
+const annualDoseEl = document.getElementById('annualDose');
+const publicPctEl = document.getElementById('publicPct');
+const crewPctEl = document.getElementById('crewPct');
+const publicFill = document.getElementById('publicFill');
+const crewFill = document.getElementById('crewFill');
+const toggleRadiation = document.getElementById('toggleRadiation');
 
 function parseDateTimeLocalAsUTC(value) {
   const match = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/.exec(value);
@@ -382,7 +631,7 @@ function mulberry32(seed) {
 }
 
 // This is the function you will later replace with "fetch from external"
-function generateRadiationGrid(dateUTC, latStep = 1, lonStep = 1) {
+function generateRadiationGrid(dateUTC, latStep = 0.5, lonStep = 0.5) {
   // Coverage: lat -90..90, lon -180..180, step 1 deg.
   // We'll store as image grid: width=360 (lon -180..179), height=180 (lat 90..-89)
   // Note: for a texture, we usually map lon -180..180 to u 0..1; lat 90..-90 to v 0..1.
@@ -401,8 +650,8 @@ function generateRadiationGrid(dateUTC, latStep = 1, lonStep = 1) {
   let min = Infinity;
   let max = -Infinity;
 
-  // Set a plausible range for demo (Sv). Tune later.
-  // We'll generate something like 0.0 ~ 0.5 Sv, with occasional higher blobs.
+  // Set a plausible range for demo (microSv/h). Tune later.
+  // We'll generate something like 0.0 ~ 0.5 uSv/h, with occasional higher blobs.
   for (let y = 0; y < height; y++) {
     const lat = 90 - y * latStep; // 90..-89
     for (let x = 0; x < width; x++) {
@@ -420,12 +669,12 @@ function generateRadiationGrid(dateUTC, latStep = 1, lonStep = 1) {
       const hot = Math.pow(rnd(), 10) * 1.2; // rare spikes
 
       // final
-      let sv = 0.12 + a + b + c + n + hot;
-      if (sv < 0) sv = 0;
+      let microSv = 0.12 + a + b + c + n + hot;
+      if (microSv < 0) microSv = 0;
 
-      values[y * width + x] = sv;
-      if (sv < min) min = sv;
-      if (sv > max) max = sv;
+      values[y * width + x] = microSv;
+      if (microSv < min) min = microSv;
+      if (microSv > max) max = microSv;
     }
   }
 
@@ -504,6 +753,7 @@ const RADIATION_RADIUS = EARTH_RADIUS + 0.035;
 const radiationGeometry = new THREE.SphereGeometry(RADIATION_RADIUS, 128, 128);
 
 let radiationTexture = null;
+let radiationGrid = null;
 const radiationMaterial = new THREE.MeshBasicMaterial({
   map: null,
   transparent: true,
@@ -525,11 +775,16 @@ function updateRadiationOverlay(dateUTC) {
   radiationTexture = tex;
   radiationMaterial.map = radiationTexture;
   radiationMaterial.needsUpdate = true;
+  radiationGrid = grid;
 
   // Legend labels
-  legendMinEl.textContent = `${grid.min.toFixed(3)} Sv`;
-  legendMaxEl.textContent = `${grid.max.toFixed(3)} Sv`;
+  legendMinEl.textContent = `${grid.min.toFixed(3)} uSv/h`;
+  legendMaxEl.textContent = `${grid.max.toFixed(3)} uSv/h`;
 }
+
+toggleRadiation.addEventListener('change', () => {
+  radiationShell.visible = toggleRadiation.checked;
+});
 
 /* ============================
    NEW: init + update hooks
@@ -545,6 +800,7 @@ function setInitialDateTime() {
   updateRadiationOverlay(now);
 }
 
+
 datetimeInput.addEventListener('change', () => {
   const value = datetimeInput.value;
   if (!value) return;
@@ -552,6 +808,12 @@ datetimeInput.addEventListener('change', () => {
   if (date && !Number.isNaN(date.getTime())) {
     updateSunFromDate(date);
     updateRadiationOverlay(date);
+    if (currentRoute && radiationGrid) {
+      const dose = computeRouteDose(currentRoute, radiationGrid);
+      routeDistanceEl.textContent = `${dose.distanceKm.toFixed(1)} km`;
+      routeTimeEl.textContent = `${dose.hours.toFixed(2)} h`;
+      routeDoseEl.textContent = `${dose.doseMicroSv.toFixed(2)} uSv (${dose.doseSv.toExponential(3)} Sv)`;
+    }
   }
 });
 
@@ -574,6 +836,22 @@ try {
 const allCapitals = data.capitals.slice().sort();
 const capitalRoutes = new Map();
 const reverseCapitalRoutes = new Map();
+let currentRoute = null;
+let annualDoseMicroSv = 0;
+
+function updateAnnualUI() {
+  annualDoseEl.textContent = `${annualDoseMicroSv.toFixed(2)} uSv`;
+  const publicLimit = 1000; // 1 mSv = 1000 uSv
+  const crewLimit = 6000;   // 6 mSv = 6000 uSv
+  const publicPct = Math.min(100, (annualDoseMicroSv / publicLimit) * 100);
+  const crewPct = Math.min(100, (annualDoseMicroSv / crewLimit) * 100);
+  publicPctEl.textContent = `${publicPct.toFixed(1)}%`;
+  crewPctEl.textContent = `${crewPct.toFixed(1)}%`;
+  publicFill.style.width = `${publicPct}%`;
+  crewFill.style.width = `${crewPct}%`;
+}
+
+updateAnnualUI();
 
 for (const route of data.routes) {
   const srcCapital = data.capitalByAirport[route.src];
@@ -603,7 +881,7 @@ function updateArriveOptions() {
   const allowed = depart ? Array.from(capitalRoutes.get(depart) || []) : allCapitals;
   allowed.sort();
   const current = arriveSelect.value;
-  rebuildSelect(arriveSelect, allowed, allowed.includes(current) ? current : '', 'Arrive');
+  rebuildSelect(arriveSelect, allowed, allowed.includes(current) ? current : '', 'Select');
 }
 
 function updateDepartOptions() {
@@ -611,11 +889,11 @@ function updateDepartOptions() {
   const allowed = arrive ? Array.from(reverseCapitalRoutes.get(arrive) || []) : allCapitals;
   allowed.sort();
   const current = departSelect.value;
-  rebuildSelect(departSelect, allowed, allowed.includes(current) ? current : '', 'Depart');
+  rebuildSelect(departSelect, allowed, allowed.includes(current) ? current : '', 'Select');
 }
 
-rebuildSelect(departSelect, allCapitals, '', 'Depart');
-rebuildSelect(arriveSelect, allCapitals, '', 'Arrive');
+rebuildSelect(departSelect, allCapitals, '', 'Select');
+rebuildSelect(arriveSelect, allCapitals, '', 'Select');
 
 departSelect.addEventListener('change', () => {
   updateArriveOptions();
@@ -655,6 +933,39 @@ showBtn.addEventListener('click', () => {
 
   drawRoute(best);
   focusOnRoute(best);
+  currentRoute = best;
+
+  if (radiationGrid) {
+    const dose = computeRouteDose(best, radiationGrid);
+    routeDistanceEl.textContent = `${dose.distanceKm.toFixed(1)} km`;
+    routeTimeEl.textContent = `${dose.hours.toFixed(2)} h`;
+    routeDoseEl.textContent = `${dose.doseMicroSv.toFixed(2)} uSv (${dose.doseSv.toExponential(3)} Sv)`;
+  } else {
+    routeDistanceEl.textContent = '-';
+    routeTimeEl.textContent = '-';
+    routeDoseEl.textContent = '-';
+  }
+});
+
+addToLogBtn.addEventListener('click', () => {
+  if (!currentRoute || !radiationGrid) {
+    window.alert('먼저 노선을 선택하고 Show를 눌러주세요.');
+    return;
+  }
+  const dose = computeRouteDose(currentRoute, radiationGrid);
+  annualDoseMicroSv += dose.doseMicroSv;
+  updateAnnualUI();
+});
+
+profileBtn.addEventListener('click', () => {
+  const isOpen = profileMenu.style.display === 'flex';
+  profileMenu.style.display = isOpen ? 'none' : 'flex';
+});
+
+document.addEventListener('click', (event) => {
+  if (!profileMenu.contains(event.target) && !profileBtn.contains(event.target)) {
+    profileMenu.style.display = 'none';
+  }
 });
 
 // LOOP
