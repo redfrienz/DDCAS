@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Earth Orbit Control</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/"
+    }
+  }
+  </script>
+
+  <style>
+    html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; }
+    canvas { display: block; }
+    #ui {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: rgba(0, 0, 0, 0.6);
+      color: #ffffff;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      font-size: 14px;
+      display: grid;
+      gap: 8px;
+      z-index: 10;
+      backdrop-filter: blur(6px);
+    }
+    #ui .row {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+    }
+    #ui .field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    #ui .field label {
+      font-size: 12px;
+      opacity: 0.8;
+    }
+    #ui .label-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+    #ui .label-dot.green { background: #00ff7f; }
+    #ui .label-dot.red { background: #ff5555; }
+    #time-ui {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      background: rgba(0, 0, 0, 0.6);
+      color: #ffffff;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      font-size: 14px;
+      display: grid;
+      gap: 6px;
+      z-index: 10;
+      backdrop-filter: blur(6px);
+    }
+    #time-ui label {
+      font-size: 12px;
+      opacity: 0.8;
+    }
+    #time-ui input {
+      font-size: 14px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid #444;
+      background: #111;
+      color: #fff;
+    }
+    #ui select, #ui button {
+      font-size: 14px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid #444;
+      background: #111;
+      color: #fff;
+    }
+    #ui button {
+      cursor: pointer;
+      border-color: #2aa3ff;
+      background: #2aa3ff;
+      color: #000;
+      font-weight: 600;
+    }
+    #ui .arrow {
+      opacity: 0.7;
+    }
+
+    /* === NEW: Radiation legend === */
+    #legend {
+      margin-top: 6px;
+      display: grid;
+      gap: 6px;
+      padding-top: 6px;
+      border-top: 1px solid rgba(255,255,255,0.15);
+    }
+    #legend .title {
+      font-size: 12px;
+      opacity: 0.85;
+    }
+    #legend .bar {
+      width: 240px;
+      height: 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.22);
+      background: linear-gradient(90deg, #2a6cff 0%, #37e0ff 25%, #7dff8d 50%, #ffd166 75%, #ff3b3b 100%);
+    }
+    #legend .labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      opacity: 0.85;
+    }
+  </style>
+</head>
+<body>
+<div id="time-ui">
+  <label for="datetimeInput">Date & Time (GST)</label>
+  <input id="datetimeInput" type="datetime-local" lang="en" />
+</div>
+<div id="ui">
+  <div class="row">
+    <div class="field">
+      <label for="departSelect"><span class="label-dot green"></span>Depart</label>
+      <select id="departSelect">
+        <option value="">Depart</option>
+      </select>
+    </div>
+    <span class="arrow">→</span>
+    <div class="field">
+      <label for="arriveSelect"><span class="label-dot red"></span>Arrive</label>
+      <select id="arriveSelect">
+        <option value="">Arrive</option>
+      </select>
+    </div>
+    <button id="showBtn">Show</button>
+  </div>
+
+  <!-- NEW: legend -->
+  <div id="legend">
+    <div class="title">Radiation (Sv) overlay</div>
+    <div class="bar" aria-label="radiation color legend"></div>
+    <div class="labels">
+      <span id="legendMin">min</span>
+      <span id="legendMax">max</span>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+// SCENE
+const scene = new THREE.Scene();
+
+// CAMERA
+const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.set(0, 0, 4);
+
+// RENDERER
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.NoToneMapping;
+document.body.appendChild(renderer.domElement);
+
+// CONTROLS
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.05;
+controls.enablePan = false;
+controls.minDistance = 2;
+controls.maxDistance = 8;
+controls.target.set(0, 0, 0);
+controls.update();
+
+// BACKGROUND
+const textureLoader = new THREE.TextureLoader();
+textureLoader.load('./texture/2k_stars.jpg', (texture) => {
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.minFilter = THREE.NearestFilter;
+  texture.magFilter = THREE.NearestFilter;
+  scene.background = texture;
+});
+
+// LIGHTS
+scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+const sunLight = new THREE.DirectionalLight(0xffffff, 1);
+scene.add(sunLight);
+
+// EARTH
+const EARTH_RADIUS = 1;
+const earthGeometry = new THREE.SphereGeometry(EARTH_RADIUS, 64, 64);
+const earthTexture = textureLoader.load('./texture/2k_earth_daymap.jpg');
+earthTexture.colorSpace = THREE.SRGBColorSpace;
+
+const earth = new THREE.Mesh(
+  earthGeometry,
+  new THREE.MeshStandardMaterial({ map: earthTexture })
+);
+scene.add(earth);
+
+// MARKER
+function latLonToVector3(lat, lon, radius) {
+  const u = (lon + 180) / 360;
+  const v = (90 - lat) / 180;
+
+  const theta = v * Math.PI;
+  const phi = u * Math.PI * 2;
+
+  const sinTheta = Math.sin(theta);
+  const x = -radius * Math.cos(phi) * sinTheta;
+  const y =  radius * Math.cos(theta);
+  const z =  radius * Math.sin(phi) * sinTheta;
+
+  return new THREE.Vector3(x, y, z);
+}
+
+function latLonToUnitVector(lat, lon) {
+  return latLonToVector3(lat, lon, 1).normalize();
+}
+
+function getSolarDeclination(dayOfYear) {
+  return 23.44 * Math.sin(((2 * Math.PI) / 365) * (dayOfYear - 81));
+}
+
+function dayOfYearUTC(date) {
+  const start = Date.UTC(date.getUTCFullYear(), 0, 0);
+  const now = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+  return Math.floor((now - start) / 86400000);
+}
+
+function updateSunFromDate(date) {
+  const doy = dayOfYearUTC(date);
+  const declination = getSolarDeclination(doy);
+
+  const hours =
+    date.getUTCHours() +
+    date.getUTCMinutes() / 60 +
+    date.getUTCSeconds() / 3600;
+  const subsolarLon = 180 - (hours * 15);
+
+  const sunDir = latLonToUnitVector(declination, subsolarLon);
+  sunLight.position.copy(sunDir.multiplyScalar(5));
+  sunLight.target.position.set(0, 0, 0);
+  sunLight.target.updateMatrixWorld();
+}
+
+const startMarker = new THREE.Mesh(
+  new THREE.SphereGeometry(0.015, 16, 16),
+  new THREE.MeshBasicMaterial({ color: 0x00ff7f })
+);
+const endMarker = new THREE.Mesh(
+  new THREE.SphereGeometry(0.015, 16, 16),
+  new THREE.MeshBasicMaterial({ color: 0xff5555 })
+);
+startMarker.visible = false;
+endMarker.visible = false;
+scene.add(startMarker);
+scene.add(endMarker);
+
+let currentRouteLine = null;
+
+function greatCircleKm(lat1, lon1, lat2, lon2) {
+  const r = 6371.0088;
+  const toRad = (v) => (v * Math.PI) / 180;
+  const phi1 = toRad(lat1);
+  const phi2 = toRad(lat2);
+  const dPhi = toRad(lat2 - lat1);
+  const dLambda = toRad(lon2 - lon1);
+  const a = Math.sin(dPhi / 2) ** 2 +
+    Math.cos(phi1) * Math.cos(phi2) * Math.sin(dLambda / 2) ** 2;
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return r * c;
+}
+
+function buildArcPoints(lat1, lon1, lat2, lon2, segments = 64) {
+  const start = latLonToVector3(lat1, lon1, 1).normalize();
+  const end = latLonToVector3(lat2, lon2, 1).normalize();
+  const dot = Math.min(1, Math.max(-1, start.dot(end)));
+  const omega = Math.acos(dot);
+  const sinOmega = Math.sin(omega);
+  const points = [];
+  for (let i = 0; i <= segments; i++) {
+    const t = i / segments;
+    let p;
+    if (sinOmega < 1e-6) {
+      p = start.clone().lerp(end, t).normalize();
+    } else {
+      const a = Math.sin((1 - t) * omega) / sinOmega;
+      const b = Math.sin(t * omega) / sinOmega;
+      p = start.clone().multiplyScalar(a).add(end.clone().multiplyScalar(b)).normalize();
+    }
+    p.multiplyScalar(EARTH_RADIUS + 0.02);
+    points.push(p);
+  }
+  return points;
+}
+
+function drawRoute(route) {
+  if (currentRouteLine) {
+    scene.remove(currentRouteLine);
+    currentRouteLine.geometry.dispose();
+    currentRouteLine.material.dispose();
+    currentRouteLine = null;
+  }
+
+  const points = buildArcPoints(route.srcLat, route.srcLon, route.dstLat, route.dstLon);
+  const routeGeometry = new THREE.BufferGeometry().setFromPoints(points);
+  const routeMaterial = new THREE.LineBasicMaterial({ color: 0x00ffff });
+  currentRouteLine = new THREE.Line(routeGeometry, routeMaterial);
+  scene.add(currentRouteLine);
+
+  startMarker.position.copy(latLonToVector3(route.srcLat, route.srcLon, EARTH_RADIUS + 0.02));
+  endMarker.position.copy(latLonToVector3(route.dstLat, route.dstLon, EARTH_RADIUS + 0.02));
+  startMarker.visible = true;
+  endMarker.visible = true;
+}
+
+function focusOnRoute(route) {
+  const mid = latLonToVector3(
+    (route.srcLat + route.dstLat) / 2,
+    (route.srcLon + route.dstLon) / 2,
+    1
+  ).normalize();
+  const distance = 4;
+  camera.position.copy(mid.multiplyScalar(distance));
+  camera.up.set(0, 1, 0);
+  controls.target.set(0, 0, 0);
+  controls.update();
+}
+
+// UI + DATA
+const departSelect = document.getElementById('departSelect');
+const arriveSelect = document.getElementById('arriveSelect');
+const showBtn = document.getElementById('showBtn');
+const datetimeInput = document.getElementById('datetimeInput');
+
+// NEW: legend elements
+const legendMinEl = document.getElementById('legendMin');
+const legendMaxEl = document.getElementById('legendMax');
+
+function parseDateTimeLocalAsUTC(value) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/.exec(value);
+  if (!match) return null;
+  const [, y, m, d, hh, mm] = match.map(Number);
+  return new Date(Date.UTC(y, m - 1, d, hh, mm, 0));
+}
+
+/* ============================
+   NEW: Radiation overlay
+   ============================ */
+
+// small deterministic PRNG (so changing time gives stable-but-repeatable random field)
+function mulberry32(seed) {
+  let a = seed >>> 0;
+  return function() {
+    a |= 0;
+    a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+// This is the function you will later replace with "fetch from external"
+function generateRadiationGrid(dateUTC, latStep = 1, lonStep = 1) {
+  // Coverage: lat -90..90, lon -180..180, step 1 deg.
+  // We'll store as image grid: width=360 (lon -180..179), height=180 (lat 90..-89)
+  // Note: for a texture, we usually map lon -180..180 to u 0..1; lat 90..-90 to v 0..1.
+  // We'll use 360x180 to avoid duplicating seam column; Three.js wraps it.
+  const width = Math.floor(360 / lonStep);
+  const height = Math.floor(180 / latStep);
+
+  // Seed based on date (minute precision). You can change to seconds if you want more variation.
+  const seed = Math.floor(dateUTC.getTime() / 60000) >>> 0;
+  const rnd = mulberry32(seed);
+
+  // Make values with a bit of spatial smoothness:
+  // combine low-frequency waves + noise so it doesn't look like TV static.
+  const values = new Float32Array(width * height);
+
+  let min = Infinity;
+  let max = -Infinity;
+
+  // Set a plausible range for demo (Sv). Tune later.
+  // We'll generate something like 0.0 ~ 0.5 Sv, with occasional higher blobs.
+  for (let y = 0; y < height; y++) {
+    const lat = 90 - y * latStep; // 90..-89
+    for (let x = 0; x < width; x++) {
+      const lon = -180 + x * lonStep; // -180..179
+
+      // smooth base pattern
+      const a = Math.sin((lat * Math.PI) / 180 * 2) * 0.12;
+      const b = Math.cos((lon * Math.PI) / 180 * 3) * 0.10;
+      const c = Math.sin(((lat + lon) * Math.PI) / 180) * 0.08;
+
+      // noise
+      const n = (rnd() - 0.5) * 0.18;
+
+      // occasional hot spots
+      const hot = Math.pow(rnd(), 10) * 1.2; // rare spikes
+
+      // final
+      let sv = 0.12 + a + b + c + n + hot;
+      if (sv < 0) sv = 0;
+
+      values[y * width + x] = sv;
+      if (sv < min) min = sv;
+      if (sv > max) max = sv;
+    }
+  }
+
+  return { width, height, latStep, lonStep, values, min, max };
+}
+
+// color ramp: low=blue -> high=red (continuous)
+// returns [r,g,b] 0..255
+function colorForValue(v, vmin, vmax) {
+  const tRaw = (v - vmin) / Math.max(1e-9, (vmax - vmin));
+  const t = Math.min(1, Math.max(0, tRaw));
+
+  // A smooth multi-stop gradient for nicer transitions:
+  // 0.00: deep blue
+  // 0.25: cyan
+  // 0.50: greenish
+  // 0.75: yellow/orange
+  // 1.00: red
+  const stops = [
+    { t: 0.00, c: [ 42, 108, 255] },
+    { t: 0.25, c: [ 55, 224, 255] },
+    { t: 0.50, c: [125, 255, 141] },
+    { t: 0.75, c: [255, 209, 102] },
+    { t: 1.00, c: [255,  59,  59] },
+  ];
+
+  let i = 0;
+  while (i < stops.length - 2 && t > stops[i + 1].t) i++;
+
+  const s0 = stops[i];
+  const s1 = stops[i + 1];
+  const localT = (t - s0.t) / Math.max(1e-9, (s1.t - s0.t));
+
+  const r = Math.round(s0.c[0] + (s1.c[0] - s0.c[0]) * localT);
+  const g = Math.round(s0.c[1] + (s1.c[1] - s0.c[1]) * localT);
+  const b = Math.round(s0.c[2] + (s1.c[2] - s0.c[2]) * localT);
+  return [r, g, b];
+}
+
+function buildRadiationTexture(grid) {
+  const { width, height, values, min, max } = grid;
+
+  // RGBA texture
+  const data = new Uint8Array(width * height * 4);
+
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const v = values[y * width + x];
+      const [r, g, b] = colorForValue(v, min, max);
+
+      const idx = (y * width + x) * 4;
+      data[idx + 0] = r;
+      data[idx + 1] = g;
+      data[idx + 2] = b;
+
+      // Alpha: keep it visible but not too aggressive.
+      // Optionally make higher radiation slightly more opaque.
+      const t = (v - min) / Math.max(1e-9, (max - min));
+      const alpha = 70 + Math.round(120 * Math.min(1, Math.max(0, t))); // 70..190
+      data[idx + 3] = alpha;
+    }
+  }
+
+  const tex = new THREE.DataTexture(data, width, height, THREE.RGBAFormat);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.wrapS = THREE.RepeatWrapping;
+  tex.wrapT = THREE.ClampToEdgeWrapping;
+  tex.minFilter = THREE.LinearFilter;
+  tex.magFilter = THREE.LinearFilter;
+  tex.needsUpdate = true;
+  return tex;
+}
+
+// Create atmosphere-like overlay sphere
+const RADIATION_RADIUS = EARTH_RADIUS + 0.035;
+const radiationGeometry = new THREE.SphereGeometry(RADIATION_RADIUS, 128, 128);
+
+let radiationTexture = null;
+const radiationMaterial = new THREE.MeshBasicMaterial({
+  map: null,
+  transparent: true,
+  opacity: 0.70,     // base opacity; alpha channel also applies
+  depthWrite: false, // so it doesn't "cut holes" in earth
+  blending: THREE.NormalBlending,
+});
+const radiationShell = new THREE.Mesh(radiationGeometry, radiationMaterial);
+radiationShell.renderOrder = 2;
+scene.add(radiationShell);
+
+function updateRadiationOverlay(dateUTC) {
+  const grid = generateRadiationGrid(dateUTC, 1, 1);
+  const tex = buildRadiationTexture(grid);
+
+  if (radiationTexture) {
+    radiationTexture.dispose();
+  }
+  radiationTexture = tex;
+  radiationMaterial.map = radiationTexture;
+  radiationMaterial.needsUpdate = true;
+
+  // Legend labels
+  legendMinEl.textContent = `${grid.min.toFixed(3)} Sv`;
+  legendMaxEl.textContent = `${grid.max.toFixed(3)} Sv`;
+}
+
+/* ============================
+   NEW: init + update hooks
+   ============================ */
+
+function setInitialDateTime() {
+  const now = new Date();
+  const pad = (n) => String(n).padStart(2, '0');
+  const utcValue = `${now.getUTCFullYear()}-${pad(now.getUTCMonth() + 1)}-${pad(now.getUTCDate())}T${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}`;
+  datetimeInput.value = utcValue;
+
+  updateSunFromDate(now);
+  updateRadiationOverlay(now);
+}
+
+datetimeInput.addEventListener('change', () => {
+  const value = datetimeInput.value;
+  if (!value) return;
+  const date = parseDateTimeLocalAsUTC(value);
+  if (date && !Number.isNaN(date.getTime())) {
+    updateSunFromDate(date);
+    updateRadiationOverlay(date);
+  }
+});
+
+setInitialDateTime();
+
+// DATA LOAD (unchanged)
+let data;
+try {
+  const res = await fetch('./data/capitals_routes.json');
+  if (!res.ok) {
+    throw new Error(`Failed to load data: ${res.status}`);
+  }
+  data = await res.json();
+} catch (err) {
+  console.error(err);
+  window.alert('데이터를 불러오지 못했습니다. 로컬 서버(http://localhost:8001)로 열어주세요.');
+  throw err;
+}
+
+const allCapitals = data.capitals.slice().sort();
+const capitalRoutes = new Map();
+const reverseCapitalRoutes = new Map();
+
+for (const route of data.routes) {
+  const srcCapital = data.capitalByAirport[route.src];
+  const dstCapital = data.capitalByAirport[route.dst];
+  if (!srcCapital || !dstCapital) continue;
+
+  if (!capitalRoutes.has(srcCapital)) capitalRoutes.set(srcCapital, new Set());
+  if (!reverseCapitalRoutes.has(dstCapital)) reverseCapitalRoutes.set(dstCapital, new Set());
+  capitalRoutes.get(srcCapital).add(dstCapital);
+  reverseCapitalRoutes.get(dstCapital).add(srcCapital);
+}
+
+function rebuildSelect(select, options, selectedValue, placeholder) {
+  select.innerHTML = '';
+  const first = new Option(placeholder, '');
+  first.selected = selectedValue === '';
+  select.add(first);
+  for (const name of options) {
+    const opt = new Option(name, name);
+    if (name === selectedValue) opt.selected = true;
+    select.add(opt);
+  }
+}
+
+function updateArriveOptions() {
+  const depart = departSelect.value;
+  const allowed = depart ? Array.from(capitalRoutes.get(depart) || []) : allCapitals;
+  allowed.sort();
+  const current = arriveSelect.value;
+  rebuildSelect(arriveSelect, allowed, allowed.includes(current) ? current : '', 'Arrive');
+}
+
+function updateDepartOptions() {
+  const arrive = arriveSelect.value;
+  const allowed = arrive ? Array.from(reverseCapitalRoutes.get(arrive) || []) : allCapitals;
+  allowed.sort();
+  const current = departSelect.value;
+  rebuildSelect(departSelect, allowed, allowed.includes(current) ? current : '', 'Depart');
+}
+
+rebuildSelect(departSelect, allCapitals, '', 'Depart');
+rebuildSelect(arriveSelect, allCapitals, '', 'Arrive');
+
+departSelect.addEventListener('change', () => {
+  updateArriveOptions();
+});
+
+arriveSelect.addEventListener('change', () => {
+  updateDepartOptions();
+});
+
+showBtn.addEventListener('click', () => {
+  const depart = departSelect.value;
+  const arrive = arriveSelect.value;
+  if (!depart || !arrive) {
+    window.alert('depart와 arrive를 모두 선택해주세요.');
+    return;
+  }
+
+  let best = null;
+  let bestDist = Infinity;
+
+  for (const route of data.routes) {
+    const srcCapital = data.capitalByAirport[route.src];
+    const dstCapital = data.capitalByAirport[route.dst];
+    if (srcCapital !== depart || dstCapital !== arrive) continue;
+
+    const dist = greatCircleKm(route.srcLat, route.srcLon, route.dstLat, route.dstLon);
+    if (dist < bestDist) {
+      bestDist = dist;
+      best = route;
+    }
+  }
+
+  if (!best) {
+    window.alert('선택한 수도 간에 노선이 없습니다.');
+    return;
+  }
+
+  drawRoute(best);
+  focusOnRoute(best);
+});
+
+// LOOP
+function animate() {
+  requestAnimationFrame(animate);
+  controls.update();
+  renderer.render(scene, camera);
+}
+animate();
+
+// RESIZE
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+</script>
+</body>
+</html>
