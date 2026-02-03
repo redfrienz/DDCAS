@@ -496,6 +496,7 @@
   const markerGeometry = new THREE.SphereGeometry(0.025, 16, 16);
   const startMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff7f });
   const endMaterial = new THREE.MeshBasicMaterial({ color: 0xff5555 });
+  const midMaterial = new THREE.MeshBasicMaterial({ color: 0xffd166 });
   let routeGroup = new THREE.Group();
   scene.add(routeGroup);
 
@@ -550,10 +551,22 @@
       return;
     }
     clearRoutes();
-    const points = buildArcPoints(entry.srcLat, entry.srcLon, entry.dstLat, entry.dstLon);
-    const geometry = new THREE.BufferGeometry().setFromPoints(points);
-    const line = new THREE.Line(geometry, routeMaterial);
-    routeGroup.add(line);
+    const hasAlt = entry.routeType === 'alternative'
+      && typeof entry.midLat === 'number'
+      && typeof entry.midLon === 'number';
+    if (hasAlt) {
+      const pointsAB = buildArcPoints(entry.srcLat, entry.srcLon, entry.midLat, entry.midLon);
+      const pointsBC = buildArcPoints(entry.midLat, entry.midLon, entry.dstLat, entry.dstLon);
+      const lineAB = new THREE.Line(new THREE.BufferGeometry().setFromPoints(pointsAB), routeMaterial);
+      const lineBC = new THREE.Line(new THREE.BufferGeometry().setFromPoints(pointsBC), routeMaterial);
+      routeGroup.add(lineAB);
+      routeGroup.add(lineBC);
+    } else {
+      const points = buildArcPoints(entry.srcLat, entry.srcLon, entry.dstLat, entry.dstLon);
+      const geometry = new THREE.BufferGeometry().setFromPoints(points);
+      const line = new THREE.Line(geometry, routeMaterial);
+      routeGroup.add(line);
+    }
 
     const startMarker = new THREE.Mesh(markerGeometry, startMaterial);
     const endMarker = new THREE.Mesh(markerGeometry, endMaterial);
@@ -561,13 +574,24 @@
     endMarker.position.copy(latLonToVector3(entry.dstLat, entry.dstLon, 1.02));
     routeGroup.add(startMarker);
     routeGroup.add(endMarker);
+    if (hasAlt) {
+      const midMarker = new THREE.Mesh(markerGeometry, midMaterial);
+      midMarker.position.copy(latLonToVector3(entry.midLat, entry.midLon, 1.02));
+      routeGroup.add(midMarker);
+    }
   }
 
   function focusRoute(entry) {
     if (!entry || typeof entry.srcLat !== 'number') return;
     const start = latLonToVector3(entry.srcLat, entry.srcLon, 1).normalize();
     const end = latLonToVector3(entry.dstLat, entry.dstLon, 1).normalize();
-    let midUnit = start.clone().add(end);
+    const points = [start, end];
+    if (entry.routeType === 'alternative'
+      && typeof entry.midLat === 'number'
+      && typeof entry.midLon === 'number') {
+      points.push(latLonToVector3(entry.midLat, entry.midLon, 1).normalize());
+    }
+    let midUnit = points.reduce((acc, cur) => acc.add(cur), new THREE.Vector3());
     if (midUnit.lengthSq() < 1e-6) {
       midUnit = start.clone();
     }
@@ -575,7 +599,7 @@
 
     const target = midUnit.clone();
     let radius = 0;
-    for (const p of [start, end]) {
+    for (const p of points) {
       radius = Math.max(radius, target.distanceTo(p));
     }
 
