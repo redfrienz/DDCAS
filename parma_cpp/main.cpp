@@ -101,6 +101,6 @@ int main(int argc, char* argv[]) {
 
     }
     double gcr_dose_uSv_h = gcr_dose_pSv_s * 3600.0 * 1.0e-6;
-    cout << d << endl;
+    cout << gcr_dose_uSv_h << endl;
     return 0;
 }
