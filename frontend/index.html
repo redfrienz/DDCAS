@@ -14,7 +14,7 @@
       font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
     }
     #main-title {
-      font-size: 64px;
+      font-size: 80px;
       font-weight: 700;
       color: #000000;
       letter-spacing: 2px;
@@ -22,11 +22,13 @@
     }
     #main-subtitle {
       margin-top: 8px;
-      font-size: 18px;
+      font-size: 15px;
       font-weight: 500;
       color: #222;
       text-align: center;
       line-height: 1.4;
+      display: inline-block;
+      transform-origin: center;
     }
     #main-container {
       display: flex;
@@ -34,10 +36,15 @@
       align-items: center;
       gap: 14px;
       text-align: center;
+      width: fit-content;
     }
     #auth-actions {
       display: flex;
       gap: 10px;
+      margin-top: 6px;
+    }
+    #flight-home {
+      display: none;
       margin-top: 6px;
     }
     .auth-button {
@@ -182,11 +189,13 @@
     <button type="button">About Us</button>
     <button type="button">Information</button>
     <button type="button">Casting&Alert</button>
-    <button id="flight-link" class="submenu" type="button">Flight</button>
   </div>
   <div id="main-container">
     <div id="main-title">DDCAS</div>
-    <div id="main-subtitle">Dynamic Disaster<br/>Casting & Alert System</div>
+    <div id="main-subtitle">Dynamic Disaster Casting & Alert System</div>
+    <div id="flight-home">
+      <button id="flight-home-link" class="auth-button" type="button">Flight</button>
+    </div>
     <div id="auth-actions">
       <button id="login-toggle" class="auth-button" type="button">Log in</button>
       <button id="signin-button" class="auth-button secondary" type="button">Sign in</button>
@@ -234,7 +243,8 @@
     const navMenu = document.getElementById('nav-menu');
     const myPageLink = document.getElementById('my-page-link');
     const logoutButton = document.getElementById('logout-button');
-    const flightLink = document.getElementById('flight-link');
+    const flightHomeLink = document.getElementById('flight-home-link');
+    const flightHome = document.getElementById('flight-home');
     const topLeft = document.getElementById('top-left');
     const topRight = document.getElementById('top-right');
 
@@ -266,12 +276,14 @@
     function setLoggedInUI() {
       if (isLoggedIn) {
         authActions.classList.add('hidden');
+        flightHome.style.display = 'block';
         loginForm.style.display = 'none';
         signinForm.style.display = 'none';
         topLeft.classList.remove('hidden');
         topRight.classList.remove('hidden');
       } else {
         authActions.classList.remove('hidden');
+        flightHome.style.display = 'none';
         loginForm.style.display = 'none';
         signinForm.style.display = 'none';
         topLeft.classList.add('hidden');
@@ -355,9 +367,28 @@
       window.location.href = './my_page.html';
     });
 
-    flightLink.addEventListener('click', () => {
+    flightHomeLink.addEventListener('click', () => {
       window.location.href = './index_hong.html';
     });
+
+    const mainTitle = document.getElementById('main-title');
+    const mainSubtitle = document.getElementById('main-subtitle');
+
+    function syncTitleWidths() {
+      const titleWidth = mainTitle.getBoundingClientRect().width;
+      const subtitleWidth = mainSubtitle.getBoundingClientRect().width;
+      if (subtitleWidth > 0) {
+        const scale = titleWidth / subtitleWidth;
+        mainSubtitle.style.transform = `scaleX(${scale})`;
+      }
+    }
+
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(syncTitleWidths);
+    } else {
+      window.addEventListener('load', syncTitleWidths);
+    }
+    window.addEventListener('resize', syncTitleWidths);
 
     logoutButton.addEventListener('click', () => {
       isLoggedIn = false;

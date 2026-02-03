@@ -115,15 +115,32 @@
       gap: 4px;
       font-size: 12px;
     }
-    .log-title {
-      font-size: 13px;
-      font-weight: 700;
-    }
     .log-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 8px;
+    }
+    .log-summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 2px 0;
+      border-bottom: 1px solid transparent;
+    }
+    .log-summary:hover {
+      border-bottom-color: rgba(255,255,255,0.6);
+    }
+    .log-details {
+      display: none;
+      gap: 4px;
+    }
+    .log-item.expanded .log-details {
+      display: grid;
     }
     .log-delete {
       background: transparent;
@@ -183,11 +200,13 @@
     </section>
     <div class="spacer mid"></div>
     <section id="stats-panel" class="panel">
-      <div class="panel-title">Totals</div>
+      <div class="panel-title">Annual total</div>
       <div class="stat-row"><span>Total distance</span><span id="total-distance">0 km</span></div>
       <div class="stat-row"><span>Total dose</span><span id="total-dose">0 uSv</span></div>
-      <div class="stat-row"><span>Public limit (1 mSv)</span><span id="limit-pct">0%</span></div>
-      <div class="bar"><div id="limit-fill" class="fill"></div></div>
+      <div class="stat-row"><span>Public limit (1 mSv)</span><span id="public-limit-pct">0%</span></div>
+      <div class="bar"><div id="public-limit-fill" class="fill"></div></div>
+      <div class="stat-row"><span>Crew limit (6 mSv)</span><span id="crew-limit-pct">0%</span></div>
+      <div class="bar"><div id="crew-limit-fill" class="fill"></div></div>
     </section>
     <div class="spacer bottom"></div>
   </div>
@@ -201,8 +220,10 @@
   const logList = document.getElementById('log-list');
   const totalDistanceEl = document.getElementById('total-distance');
   const totalDoseEl = document.getElementById('total-dose');
-  const limitPctEl = document.getElementById('limit-pct');
-  const limitFill = document.getElementById('limit-fill');
+  const publicLimitPctEl = document.getElementById('public-limit-pct');
+  const publicLimitFill = document.getElementById('public-limit-fill');
+  const crewLimitPctEl = document.getElementById('crew-limit-pct');
+  const crewLimitFill = document.getElementById('crew-limit-fill');
   const resetLogsButton = document.getElementById('reset-logs');
   const backLink = document.querySelector('[data-back]');
 
@@ -232,6 +253,21 @@
     return entry.dateDisplay || '-';
   }
 
+  function formatDateOnly(entry) {
+    if (entry.dateUTC) {
+      const date = new Date(entry.dateUTC);
+      if (!Number.isNaN(date.getTime())) {
+        return date.toLocaleDateString();
+      }
+    }
+    if (entry.dateDisplay) {
+      return entry.dateDisplay.split('T')[0] || entry.dateDisplay;
+    }
+    return '-';
+  }
+
+  let activeRouteId = null;
+
   function renderLogs(logs) {
     logList.innerHTML = '';
     if (!logs.length) {
@@ -246,9 +282,9 @@
       item.className = 'log-item';
       const header = document.createElement('div');
       header.className = 'log-header';
-      const title = document.createElement('div');
-      title.className = 'log-title';
-      title.textContent = `${entry.depart} → ${entry.arrive}`;
+      const summary = document.createElement('div');
+      summary.className = 'log-summary';
+      summary.innerHTML = `<span>${entry.depart} → ${entry.arrive}</span><span>${formatDateOnly(entry)}</span>`;
       const delBtn = document.createElement('button');
       delBtn.className = 'log-delete';
       delBtn.type = 'button';
@@ -256,8 +292,10 @@
       delBtn.addEventListener('click', () => {
         removeLog(entry.id);
       });
-      header.appendChild(title);
+      header.appendChild(summary);
       header.appendChild(delBtn);
+      const details = document.createElement('div');
+      details.className = 'log-details';
       const dateRow = document.createElement('div');
       dateRow.className = 'log-row';
       dateRow.innerHTML = `<span>Date</span><span>${formatDate(entry)}</span>`;
@@ -270,24 +308,35 @@
       const doseRow = document.createElement('div');
       doseRow.className = 'log-row';
       doseRow.innerHTML = `<span>Dose</span><span>${entry.doseMicroSv.toFixed(2)} uSv</span>`;
+      details.appendChild(dateRow);
+      details.appendChild(distRow);
+      details.appendChild(timeRow);
+      details.appendChild(doseRow);
       item.appendChild(header);
-      item.appendChild(dateRow);
-      item.appendChild(distRow);
-      item.appendChild(timeRow);
-      item.appendChild(doseRow);
+      item.appendChild(details);
       logList.appendChild(item);
+
+      summary.addEventListener('click', () => {
+        item.classList.toggle('expanded');
+        activeRouteId = entry.id;
+        showRoute(entry);
+      });
     }
   }
 
   function updateTotals(logs) {
     const totalDistance = logs.reduce((sum, entry) => sum + (entry.distanceKm || 0), 0);
     const totalDose = logs.reduce((sum, entry) => sum + (entry.doseMicroSv || 0), 0);
-    const limit = 1000; // 1 mSv = 1000 uSv
-    const pct = limit > 0 ? Math.min(100, (totalDose / limit) * 100) : 0;
+    const publicLimit = 1000; // 1 mSv = 1000 uSv
+    const crewLimit = 6000;   // 6 mSv = 6000 uSv
+    const publicPct = publicLimit > 0 ? Math.min(100, (totalDose / publicLimit) * 100) : 0;
+    const crewPct = crewLimit > 0 ? Math.min(100, (totalDose / crewLimit) * 100) : 0;
     totalDistanceEl.textContent = `${totalDistance.toFixed(1)} km`;
     totalDoseEl.textContent = `${totalDose.toFixed(2)} uSv`;
-    limitPctEl.textContent = `${pct.toFixed(1)}%`;
-    limitFill.style.width = `${pct}%`;
+    publicLimitPctEl.textContent = `${publicPct.toFixed(1)}%`;
+    publicLimitFill.style.width = `${publicPct}%`;
+    crewLimitPctEl.textContent = `${crewPct.toFixed(1)}%`;
+    crewLimitFill.style.width = `${crewPct}%`;
   }
 
   function latLonToVector3(lat, lon, radius) {
@@ -333,7 +382,12 @@
     });
     renderLogs(logs);
     updateTotals(logs);
-    drawRoutes(logs);
+    if (activeRouteId) {
+      const entry = logs.find((log) => log.id === activeRouteId);
+      showRoute(entry);
+    } else {
+      clearRoutes();
+    }
   }
 
   function writeLogs(logs) {
@@ -342,6 +396,9 @@
 
   function removeLog(id) {
     const logs = readLogs().filter((entry) => entry.id !== id);
+    if (activeRouteId === id) {
+      activeRouteId = null;
+    }
     writeLogs(logs);
     refreshUI();
   }
@@ -387,7 +444,7 @@
   earthTexture.colorSpace = THREE.SRGBColorSpace;
   const earth = new THREE.Mesh(
     new THREE.SphereGeometry(1, 64, 64),
-    new THREE.MeshStandardMaterial({ map: earthTexture })
+    new THREE.MeshBasicMaterial({ map: earthTexture })
   );
   scene.add(earth);
 
@@ -398,30 +455,45 @@
   let routeGroup = new THREE.Group();
   scene.add(routeGroup);
 
-  function drawRoutes(currentLogs) {
+  function clearRoutes() {
     scene.remove(routeGroup);
     routeGroup.traverse((obj) => {
       if (obj.geometry) obj.geometry.dispose();
       if (obj.material) obj.material.dispose();
     });
     routeGroup = new THREE.Group();
-    for (const entry of currentLogs) {
-      if (typeof entry.srcLat !== 'number') continue;
-      const points = buildArcPoints(entry.srcLat, entry.srcLon, entry.dstLat, entry.dstLon);
-      const geometry = new THREE.BufferGeometry().setFromPoints(points);
-      const line = new THREE.Line(geometry, routeMaterial);
-      routeGroup.add(line);
-
-      const startMarker = new THREE.Mesh(markerGeometry, startMaterial);
-      const endMarker = new THREE.Mesh(markerGeometry, endMaterial);
-      startMarker.position.copy(latLonToVector3(entry.srcLat, entry.srcLon, 1.02));
-      endMarker.position.copy(latLonToVector3(entry.dstLat, entry.dstLon, 1.02));
-      routeGroup.add(startMarker);
-      routeGroup.add(endMarker);
-    }
     scene.add(routeGroup);
   }
-  drawRoutes(logs);
+
+  function showRoute(entry) {
+    if (!entry || typeof entry.srcLat !== 'number') {
+      clearRoutes();
+      return;
+    }
+    clearRoutes();
+    const points = buildArcPoints(entry.srcLat, entry.srcLon, entry.dstLat, entry.dstLon);
+    const geometry = new THREE.BufferGeometry().setFromPoints(points);
+    const line = new THREE.Line(geometry, routeMaterial);
+    routeGroup.add(line);
+
+    const startMarker = new THREE.Mesh(markerGeometry, startMaterial);
+    const endMarker = new THREE.Mesh(markerGeometry, endMaterial);
+    startMarker.position.copy(latLonToVector3(entry.srcLat, entry.srcLon, 1.02));
+    endMarker.position.copy(latLonToVector3(entry.dstLat, entry.dstLon, 1.02));
+    routeGroup.add(startMarker);
+    routeGroup.add(endMarker);
+
+    const mid = latLonToVector3(
+      (entry.srcLat + entry.dstLat) / 2,
+      (entry.srcLon + entry.dstLon) / 2,
+      1
+    ).normalize();
+    const distance = 4;
+    camera.position.copy(mid.multiplyScalar(distance));
+    camera.up.set(0, 1, 0);
+    controls.target.set(0, 0, 0);
+    controls.update();
+  }
 
   function animate() {
     requestAnimationFrame(animate);
