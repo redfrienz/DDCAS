@@ -147,6 +147,56 @@
       box-sizing: border-box;
       width: 100%;
     }
+    #time-ui .alara-section {
+      display: none;
+      gap: 6px;
+      margin-bottom: 6px;
+      padding: 8px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.04);
+      box-sizing: border-box;
+      width: 100%;
+    }
+    #time-ui .alara-section.active {
+      display: grid;
+    }
+    #time-ui .alara-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      opacity: 0.95;
+    }
+    #time-ui .alara-content {
+      display: grid;
+      gap: 6px;
+      font-size: 12px;
+    }
+    #time-ui .alara-actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    #time-ui .alara-actions button {
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    #time-ui .alara-actions button.primary {
+      border-color: #ff6b6b;
+      background: #ff6b6b;
+      color: #000;
+      font-weight: 700;
+    }
+    #time-ui .alara-selected {
+      font-size: 12px;
+      font-weight: 700;
+      color: #7dffb0;
+    }
     #time-ui .pred-title {
       font-size: 14px;
       font-weight: 600;
@@ -258,6 +308,12 @@
       align-items: center;
       justify-content: center;
     }
+    #profile button.admin {
+      background: #000;
+      color: #fff;
+      font-weight: 700;
+      border-color: #000;
+    }
     #profile-menu {
       position: absolute;
       top: 56px;
@@ -311,6 +367,30 @@
     }
     #log-modal.open {
       display: flex;
+    }
+    #loading-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+      pointer-events: all;
+    }
+    #loading-overlay.active {
+      display: flex;
+    }
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 4px solid rgba(255,255,255,0.2);
+      border-top-color: #ffffff;
+      animation: spin 0.9s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
     .modal-card {
       width: min(420px, 90vw);
@@ -478,6 +558,10 @@
 <body>
 <a id="brand" href="./index.html">DDCAS</a>
 <div id="time-ui">
+  <div id="alara-section" class="alara-section">
+    <div class="alara-title">ALARA Re-routing</div>
+    <div id="alara-content" class="alara-content"></div>
+  </div>
   <div class="pred-section">
     <div class="pred-title">Tomorrow's Danger Prediction</div>
     <table class="pred-table">
@@ -540,7 +624,7 @@
 
 </div>
 
-  <div id="radiation-panel">
+<div id="radiation-panel">
   <div id="legend">
     <div class="title">Radiation overlay</div>
     <div class="bar" aria-label="radiation color legend"></div>
@@ -580,6 +664,10 @@
       <button id="cancel-log" type="button" class="secondary">Cancel</button>
     </div>
   </div>
+</div>
+
+<div id="loading-overlay" aria-hidden="true">
+  <div class="spinner" aria-label="Loading"></div>
 </div>
 
 <script type="module">
@@ -887,10 +975,10 @@ function setRouteCenteredView(route) {
   const verticalFov = THREE.MathUtils.degToRad(camera.fov);
   const horizontalFov = 2 * Math.atan(Math.tan(verticalFov / 2) * camera.aspect);
   const minFov = Math.min(verticalFov, horizontalFov);
-  const distance = Math.max(EARTH_RADIUS * 1.1, (radius * 1.35) / Math.tan(minFov / 2));
+  const distance = Math.max(EARTH_RADIUS * 1.6, (radius * 1.9) / Math.tan(minFov / 2));
 
-  const desiredPosition = target.clone().add(midUnit.multiplyScalar(distance));
-  const desiredTarget = target.clone();
+  const desiredPosition = midUnit.multiplyScalar(distance);
+  const desiredTarget = new THREE.Vector3(0, 0, 0);
   const desiredUp = new THREE.Vector3(0, 1, 0);
   startCameraTransition(desiredPosition, desiredTarget, desiredUp, 900);
 }
@@ -971,6 +1059,8 @@ const profilePageLink = document.getElementById('profile-page-link');
 const predEventEl = document.getElementById('predEvent');
 const predIntensityEl = document.getElementById('predIntensity');
 const predDangerEl = document.getElementById('predDanger');
+const alaraSection = document.getElementById('alara-section');
+const alaraContent = document.getElementById('alara-content');
 
 // NEW: legend elements
 const legendMinEl = document.getElementById('legendMin');
@@ -990,6 +1080,8 @@ const crewListEl = document.getElementById('crew-list');
 const addCrewBtn = document.getElementById('add-crew');
 const saveLogBtn = document.getElementById('save-log');
 const cancelLogBtn = document.getElementById('cancel-log');
+const loadingOverlay = document.getElementById('loading-overlay');
+let loadingCount = 0;
 
 function getCurrentUser() {
   return localStorage.getItem(CURRENT_USER_KEY) || 'guest';
@@ -1009,6 +1101,7 @@ function applyRoleUI() {
   addToLogBtn.style.display = isLoggedIn() && role === 'admin' ? 'inline-flex' : 'none';
   profilePageLink.textContent = role === 'admin' ? 'Status' : 'My Page';
   profileBtn.textContent = role === 'admin' ? 'A' : 'J';
+  profileBtn.classList.toggle('admin', role === 'admin');
 }
 
 function loadFlightRecords() {
@@ -1042,6 +1135,14 @@ function parseDateTimeLocalAsUTC(value) {
 }
 
 let sepPredictionMap = null;
+let latestPrediction = null;
+let alaraAltLine = null;
+let alaraMidLine = null;
+let alaraMidMarker = null;
+let alaraPerpLine = null;
+let alaraBMarker = null;
+let alaraAltRoute = null;
+let alaraSelection = null;
 
 async function loadSepPredictions() {
   if (sepPredictionMap) return sepPredictionMap;
@@ -1053,11 +1154,12 @@ async function loadSepPredictions() {
     const lines = text.trim().split('\n');
     lines.shift();
     for (const line of lines) {
-      const [date, pEvent, intensity] = line.split(',');
+      const [date, pEvent, intensity, expectedSep] = line.split(',');
       if (!date) continue;
       map.set(date.trim(), {
         pEvent: Number(pEvent),
         intensity: Number(intensity),
+        expectedSep: Number(expectedSep),
       });
     }
   } catch (err) {
@@ -1083,10 +1185,11 @@ async function updateSepPrediction(date) {
     predIntensityEl.classList.remove('safe', 'warn', 'danger');
     predDangerEl.textContent = '';
     predDangerEl.classList.remove('safe', 'warn', 'danger');
+    latestPrediction = null;
+    updateAlaraUI();
     return;
   }
-  const tomorrow = new Date(date.getTime() + 86400000);
-  const key = formatDateKey(tomorrow);
+  const key = formatDateKey(date);
   const entry = map.get(key);
   if (!entry) {
     predEventEl.textContent = '-';
@@ -1095,6 +1198,8 @@ async function updateSepPrediction(date) {
     predIntensityEl.classList.remove('safe', 'warn', 'danger');
     predDangerEl.textContent = '';
     predDangerEl.classList.remove('safe', 'warn', 'danger');
+    latestPrediction = null;
+    updateAlaraUI();
     return;
   }
   predEventEl.textContent = entry.pEvent.toFixed(4);
@@ -1117,6 +1222,280 @@ async function updateSepPrediction(date) {
     predDangerEl.textContent = 'CAUTION';
   } else {
     predDangerEl.textContent = 'WARNING';
+  }
+  latestPrediction = { pEvent: entry.pEvent, intensity: entry.intensity, level };
+  updateAlaraUI();
+}
+
+function slerpUnit(start, end, t) {
+  const dot = Math.min(1, Math.max(-1, start.dot(end)));
+  const omega = Math.acos(dot);
+  const sinOmega = Math.sin(omega);
+  if (sinOmega < 1e-6) {
+    return start.clone().lerp(end, t).normalize();
+  }
+  const a = Math.sin((1 - t) * omega) / sinOmega;
+  const b = Math.sin(t * omega) / sinOmega;
+  return start.clone().multiplyScalar(a).add(end.clone().multiplyScalar(b)).normalize();
+}
+
+function greatCircleKmFromVectors(a, b) {
+  const dot = Math.min(1, Math.max(-1, a.dot(b)));
+  const omega = Math.acos(dot);
+  return 6371.0088 * omega;
+}
+
+function buildTwoLegPoints(aLat, aLon, bLat, bLon, cLat, cLon) {
+  const first = buildArcPoints(aLat, aLon, bLat, bLon);
+  const second = buildArcPoints(bLat, bLon, cLat, cLon);
+  return first.concat(second.slice(1));
+}
+
+function clearAlaraAltLine() {
+  if (alaraAltLine) {
+    scene.remove(alaraAltLine);
+    alaraAltLine.traverse((obj) => {
+      if (obj.geometry) obj.geometry.dispose();
+      if (obj.material) obj.material.dispose();
+    });
+    alaraAltLine = null;
+  }
+  if (alaraMidLine) {
+    scene.remove(alaraMidLine);
+    alaraMidLine.geometry.dispose();
+    alaraMidLine.material.dispose();
+    alaraMidLine = null;
+  }
+  if (alaraMidMarker) {
+    scene.remove(alaraMidMarker);
+    alaraMidMarker.geometry.dispose();
+    alaraMidMarker.material.dispose();
+    alaraMidMarker = null;
+  }
+  if (alaraPerpLine) {
+    scene.remove(alaraPerpLine);
+    alaraPerpLine.geometry.dispose();
+    alaraPerpLine.material.dispose();
+    alaraPerpLine = null;
+  }
+  if (alaraBMarker) {
+    scene.remove(alaraBMarker);
+    alaraBMarker.geometry.dispose();
+    alaraBMarker.material.dispose();
+    alaraBMarker = null;
+  }
+}
+
+function renderAlaraAltLine(route, midPoint, axisPerpVec, midVec) {
+  clearAlaraAltLine();
+  const group = new THREE.Group();
+  const material = new THREE.LineBasicMaterial({ color: 0xffd166 });
+  const pointsAB = buildArcPoints(route.srcLat, route.srcLon, midPoint.lat, midPoint.lon);
+  const pointsBC = buildArcPoints(midPoint.lat, midPoint.lon, route.dstLat, route.dstLon);
+  const lineAB = new THREE.Line(new THREE.BufferGeometry().setFromPoints(pointsAB), material);
+  const lineBC = new THREE.Line(new THREE.BufferGeometry().setFromPoints(pointsBC), material);
+  group.add(lineAB);
+  group.add(lineBC);
+  alaraAltLine = group;
+  scene.add(alaraAltLine);
+
+  const start = latLonToVector3(route.srcLat, route.srcLon, EARTH_RADIUS).normalize();
+  const end = latLonToVector3(route.dstLat, route.dstLon, EARTH_RADIUS).normalize();
+  const dUnit = slerpUnit(start, end, 0.5);
+  const axisPerp = axisPerpVec ? axisPerpVec.clone().normalize() : dUnit.clone();
+  const dLatLon = vectorToLatLon(dUnit);
+  const bdPoints = buildArcPoints(dLatLon.lat, dLatLon.lon, midPoint.lat, midPoint.lon);
+  const bdGeometry = new THREE.BufferGeometry().setFromPoints(bdPoints);
+  const bdMaterial = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.7 });
+  alaraMidLine = new THREE.Line(bdGeometry, bdMaterial);
+  scene.add(alaraMidLine);
+
+  const markerGeometry = new THREE.SphereGeometry(0.012, 16, 16);
+  const markerMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+  alaraMidMarker = new THREE.Mesh(markerGeometry, markerMaterial);
+  alaraMidMarker.position.copy(dUnit.clone().multiplyScalar(EARTH_RADIUS + 0.02));
+  scene.add(alaraMidMarker);
+
+  const bMarkerGeometry = new THREE.SphereGeometry(0.012, 16, 16);
+  const bMarkerMaterial = new THREE.MeshBasicMaterial({ color: 0xffd166 });
+  alaraBMarker = new THREE.Mesh(bMarkerGeometry, bMarkerMaterial);
+  if (midVec) {
+    alaraBMarker.position.copy(midVec.clone().multiplyScalar(EARTH_RADIUS + 0.02));
+  } else {
+    alaraBMarker.position.copy(latLonToVector3(midPoint.lat, midPoint.lon, EARTH_RADIUS + 0.02));
+  }
+  scene.add(alaraBMarker);
+
+  const perpPoints = [];
+  const segments = 128;
+  for (let i = 0; i <= segments; i++) {
+    const theta = -Math.PI + (i / segments) * (Math.PI * 2);
+    const p = dUnit.clone().multiplyScalar(Math.cos(theta))
+      .add(axisPerp.clone().multiplyScalar(Math.sin(theta)))
+      .normalize()
+      .multiplyScalar(EARTH_RADIUS + 0.015);
+    perpPoints.push(p);
+  }
+  const perpGeometry = new THREE.BufferGeometry().setFromPoints(perpPoints);
+  const perpMaterial = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.35 });
+  alaraPerpLine = new THREE.Line(perpGeometry, perpMaterial);
+  scene.add(alaraPerpLine);
+}
+
+function computeAlaraAlternative(route, grid) {
+  const start = latLonToVector3(route.srcLat, route.srcLon, 1).normalize();
+  const end = latLonToVector3(route.dstLat, route.dstLon, 1).normalize();
+  const originalKm = greatCircleKmFromVectors(start, end);
+  const maxKm = originalKm * 1.05;
+  const mid = slerpUnit(start, end, 0.5);
+  let normal = start.clone().cross(end);
+  if (normal.lengthSq() < 1e-6) return null;
+  normal.normalize();
+  let tangent = normal.clone().cross(mid);
+  if (tangent.lengthSq() < 1e-6) return null;
+  tangent.normalize();
+  let axisPerp = tangent.clone().cross(mid);
+  if (axisPerp.lengthSq() < 1e-6) return null;
+  axisPerp.normalize();
+  if (axisPerp.y > 0) {
+    axisPerp.multiplyScalar(-1);
+  }
+
+  const candidates = [];
+  const steps = 72;
+  for (let i = 0; i <= steps; i++) {
+    const theta = -Math.PI + (i / steps) * (Math.PI * 2);
+    const bVec = mid.clone()
+      .multiplyScalar(Math.cos(theta))
+      .add(axisPerp.clone().multiplyScalar(Math.sin(theta)))
+      .normalize();
+    const kmAB = greatCircleKmFromVectors(start, bVec);
+    const kmBC = greatCircleKmFromVectors(bVec, end);
+    const totalKm = kmAB + kmBC;
+    const bLatLon = vectorToLatLon(bVec);
+    const dose1 = computeRouteDose({
+      srcLat: route.srcLat,
+      srcLon: route.srcLon,
+      dstLat: bLatLon.lat,
+      dstLon: bLatLon.lon,
+    }, grid);
+    const dose2 = computeRouteDose({
+      srcLat: bLatLon.lat,
+      srcLon: bLatLon.lon,
+      dstLat: route.dstLat,
+      dstLon: route.dstLon,
+    }, grid);
+    const totalDose = dose1.doseMicroSv + dose2.doseMicroSv;
+    candidates.push({
+      mid: bLatLon,
+      midVec: bVec.clone(),
+      axisPerp: axisPerp.clone(),
+      distanceKm: totalKm,
+      doseMicroSv: totalDose,
+    });
+  }
+  const feasible = candidates.filter((c) => c.distanceKm <= maxKm);
+  if (feasible.length === 0) return { status: 'none' };
+  const underLimit = feasible.filter((c) => c.doseMicroSv <= 200);
+  if (underLimit.length === 0) {
+    const best = feasible.reduce((acc, cur) => (cur.doseMicroSv < acc.doseMicroSv ? cur : acc), feasible[0]);
+    return { status: 'cancel', best };
+  }
+  const chosen = underLimit.reduce((acc, cur) => (cur.distanceKm < acc.distanceKm ? cur : acc), underLimit[0]);
+  return { status: 'reroute', chosen, bestDose: chosen.doseMicroSv };
+}
+
+function updateAlaraUI() {
+  if (!alaraSection || !alaraContent) return;
+  const warning = latestPrediction && latestPrediction.level === 'danger';
+  if (!warning || !currentRoute || !radiationGrid) {
+    alaraSection.classList.remove('active');
+    alaraContent.innerHTML = '';
+    clearAlaraAltLine();
+    alaraAltRoute = null;
+    alaraSelection = null;
+    return;
+  }
+
+  const originalDose = computeRouteDose(currentRoute, radiationGrid).doseMicroSv;
+  if (originalDose < 200) {
+    alaraSection.classList.remove('active');
+    alaraContent.innerHTML = '';
+    clearAlaraAltLine();
+    alaraAltRoute = null;
+    alaraSelection = null;
+    return;
+  }
+
+  const result = computeAlaraAlternative(currentRoute, radiationGrid);
+  alaraSection.classList.add('active');
+  alaraContent.innerHTML = '';
+
+  if (!result || result.status === 'none') {
+    alaraContent.innerHTML = `<div>대체 경로를 찾지 못했습니다.</div>`;
+    clearAlaraAltLine();
+    return;
+  }
+
+  if (result.status === 'cancel') {
+    alaraAltRoute = result.best;
+    alaraContent.innerHTML = `
+      <div>최소 예상 총 피폭량: ${result.best.doseMicroSv.toFixed(2)} uSv</div>
+      <div class="alara-actions">
+        <button class="primary" id="alara-cancel-btn" type="button">Flight Cancel</button>
+      </div>
+    `;
+    clearAlaraAltLine();
+    const cancelBtn = document.getElementById('alara-cancel-btn');
+    if (cancelBtn) {
+      cancelBtn.addEventListener('click', () => {
+        window.alert('Flight canceled');
+      });
+    }
+    return;
+  }
+
+  alaraAltRoute = result.chosen;
+  renderAlaraAltLine(currentRoute, result.chosen.mid, result.chosen.axisPerp, result.chosen.midVec);
+
+  const altDose = result.chosen.doseMicroSv;
+  const altKm = result.chosen.distanceKm;
+  const originalKm = greatCircleKm(currentRoute.srcLat, currentRoute.srcLon, currentRoute.dstLat, currentRoute.dstLon);
+  alaraContent.innerHTML = `
+    <div>기존 경로: ${originalDose.toFixed(2)} uSv / ${originalKm.toFixed(2)} km</div>
+    <div>대체 경로: ${altDose.toFixed(2)} uSv / ${altKm.toFixed(2)} km</div>
+    <div class="alara-actions">
+      <button id="alara-select-original" type="button">Original Route</button>
+      <button id="alara-select-alt" type="button">Alternative Route</button>
+    </div>
+    <div id="alara-selected" class="alara-selected"></div>
+  `;
+  const selectOriginal = document.getElementById('alara-select-original');
+  const selectAlt = document.getElementById('alara-select-alt');
+  const selectedMsg = document.getElementById('alara-selected');
+  if (selectOriginal) {
+    selectOriginal.addEventListener('click', () => {
+      alaraSelection = 'original';
+      if (currentRouteLine) currentRouteLine.visible = true;
+      if (alaraAltLine) alaraAltLine.visible = false;
+      if (alaraMidLine) alaraMidLine.visible = false;
+      if (alaraMidMarker) alaraMidMarker.visible = false;
+      if (alaraPerpLine) alaraPerpLine.visible = false;
+      if (alaraBMarker) alaraBMarker.visible = false;
+      if (selectedMsg) selectedMsg.textContent = 'Selected original route';
+    });
+  }
+  if (selectAlt) {
+    selectAlt.addEventListener('click', () => {
+      alaraSelection = 'alternative';
+      if (currentRouteLine) currentRouteLine.visible = false;
+      if (alaraAltLine) alaraAltLine.visible = true;
+      if (alaraMidLine) alaraMidLine.visible = true;
+      if (alaraMidMarker) alaraMidMarker.visible = true;
+      if (alaraPerpLine) alaraPerpLine.visible = true;
+      if (alaraBMarker) alaraBMarker.visible = true;
+      if (selectedMsg) selectedMsg.textContent = 'Selected alternative route';
+    });
   }
 }
 
@@ -1162,33 +1541,65 @@ function closeLogModal() {
   logModal.setAttribute('aria-hidden', 'true');
 }
 
+function showLoading() {
+  loadingCount += 1;
+  loadingOverlay.classList.add('active');
+  loadingOverlay.setAttribute('aria-hidden', 'false');
+}
+
+function hideLoading() {
+  loadingCount = Math.max(0, loadingCount - 1);
+  if (loadingCount === 0) {
+    loadingOverlay.classList.remove('active');
+    loadingOverlay.setAttribute('aria-hidden', 'true');
+  }
+}
+
 /* ============================
    NEW: Radiation overlay
    ============================ */
 
-const API_URL = "http://54.180.8.15:8000/radiation_grid";
+const API_URL = "http://3.39.244.94:8000/radiation_grid";
 
 async function fetchRadiationGridFromEC2(dateUTC) {
   const year = dateUTC.getUTCFullYear();
   const month = dateUTC.getUTCMonth() + 1;
   const day = dateUTC.getUTCDate();
 
+  let goesProton = 0.0;
+  const sepMap = await loadSepPredictions();
+  if (sepMap && sepMap.size > 0) {
+    const key = formatDateKey(dateUTC);
+    const entry = sepMap.get(key);
+    if (entry && Number.isFinite(entry.expectedSep)) {
+      goesProton = entry.expectedSep;
+    }
+  }
+
   const payload = {
     year: year,
     month: month,
     day: day,
     altitude: 30000,
-    g_parameter: 0.0,
-    goes_proton: 0.0,
-    lat_step: 1.0,
-    lon_step: 1.0
+    g_parameter: -1.5,
+    goes_proton: goesProton,
+    lat_step: 10.0,
+    lon_step: 10.0
   };
 
-  const res = await fetch(API_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
-  });
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 8000);
+  let res;
+  try {
+    res = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+      signal: controller.signal,
+    });
+  } finally {
+    clearTimeout(timeoutId);
+  }
 
   if (!res.ok) {
     throw new Error(`Radiation API failed: ${res.status}`);
@@ -1205,24 +1616,20 @@ async function fetchRadiationGridFromEC2(dateUTC) {
 
 
 
-// color ramp: low=blue -> high=red (continuous)
-// returns [r,g,b] 0..255
-function colorForValue(v, vmin, vmax) {
-  const tRaw = (v - vmin) / Math.max(1e-9, (vmax - vmin));
-  const t = Math.min(1, Math.max(0, tRaw));
+const RADIATION_SCALE_MIN = 0;
+const RADIATION_SCALE_MID = 45;
+const RADIATION_SCALE_MAX = 45;
 
-  // A smooth multi-stop gradient for nicer transitions:
-  // 0.00: deep blue
-  // 0.25: cyan
-  // 0.50: greenish
-  // 0.75: yellow/orange
-  // 1.00: red
+// color ramp with fixed thresholds (0 -> 45 -> 81+)
+// returns [r,g,b] 0..255
+function colorForValue(v) {
+  const clamped = Math.min(RADIATION_SCALE_MAX, Math.max(RADIATION_SCALE_MIN, v));
+  const t = (clamped - RADIATION_SCALE_MIN)
+    / Math.max(1e-9, (RADIATION_SCALE_MAX - RADIATION_SCALE_MIN));
+
   const stops = [
-    { t: 0.00, c: [ 42, 108, 255] },
-    { t: 0.25, c: [ 55, 224, 255] },
-    { t: 0.50, c: [125, 255, 141] },
-    { t: 0.75, c: [255, 209, 102] },
-    { t: 1.00, c: [255,  59,  59] },
+    { t: 0.0, c: [ 42, 108, 255] }, // blue
+    { t: 1.0, c: [255,  59,  59] }, // red (45+)
   ];
 
   let i = 0;
@@ -1239,7 +1646,7 @@ function colorForValue(v, vmin, vmax) {
 }
 
 function buildRadiationTexture(grid) {
-  const { width, height, values, min, max } = grid;
+  const { width, height, values } = grid;
 
   // RGBA texture
   const data = new Uint8Array(width * height * 4);
@@ -1247,7 +1654,7 @@ function buildRadiationTexture(grid) {
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
       const v = values[y * width + x];
-      const [r, g, b] = colorForValue(v, min, max);
+      const [r, g, b] = colorForValue(v);
 
       const idx = (y * width + x) * 4;
       data[idx + 0] = r;
@@ -1256,7 +1663,8 @@ function buildRadiationTexture(grid) {
 
       // Alpha: keep it visible but not too aggressive.
       // Optionally make higher radiation slightly more opaque.
-      const t = (v - min) / Math.max(1e-9, (max - min));
+      const t = (Math.min(RADIATION_SCALE_MAX, Math.max(RADIATION_SCALE_MIN, v)) - RADIATION_SCALE_MIN)
+        / Math.max(1e-9, (RADIATION_SCALE_MAX - RADIATION_SCALE_MIN));
       const alpha = 70 + Math.round(120 * Math.min(1, Math.max(0, t))); // 70..190
       data[idx + 3] = alpha;
     }
@@ -1292,23 +1700,34 @@ scene.add(radiationShell);
 async function updateRadiationOverlay(dateUTC) {
   try {
     const grid = await fetchRadiationGridFromEC2(dateUTC);
-    const tex = buildRadiationTexture(grid);
+  const tex = buildRadiationTexture(grid);
 
-    if (radiationTexture) {
-      radiationTexture.dispose();
-    }
+  if (radiationTexture) {
+    radiationTexture.dispose();
+  }
 
-    radiationTexture = tex;
-    radiationMaterial.map = radiationTexture;
-    radiationMaterial.needsUpdate = true;
-    radiationGrid = grid;
+  radiationTexture = tex;
+  radiationMaterial.map = radiationTexture;
+  radiationMaterial.needsUpdate = true;
+  radiationGrid = grid;
 
-    legendMinEl.textContent = `${grid.min.toFixed(3)} uSv/h`;
-    legendMaxEl.textContent = `${grid.max.toFixed(3)} uSv/h`;
+    legendMinEl.textContent = `${RADIATION_SCALE_MIN.toFixed(0)} uSv/h`;
+    legendMaxEl.textContent = `${RADIATION_SCALE_MAX.toFixed(0)} uSv/h`;
     return grid;
   } catch (err) {
     console.error("Radiation fetch failed:", err);
     return null;
+  }
+}
+
+async function fetchRadiationForDate(dateUTC) {
+  showLoading();
+  try {
+    const grid = await updateRadiationOverlay(dateUTC);
+    updateAlaraUI();
+    return grid;
+  } finally {
+    hideLoading();
   }
 }
 
@@ -1325,9 +1744,9 @@ function setInitialDateTime() {
   const initial = new Date(Date.UTC(2000, 0, 1, 0, 0, 0));
   datetimeInput.value = formatDateTimeLocalUTC(initial);
   simulatedTime = initial;
-  lastRadiationMinute = Math.floor(initial.getTime() / 60000);
+  lastRadiationDateKey = formatDateOnlyKey(initial);
   updateSunFromDate(initial);
-  updateRadiationOverlay(initial);
+  fetchRadiationForDate(initial);
   updateSepPrediction(initial);
 }
 
@@ -1337,11 +1756,18 @@ const TIME_SCALE = 1800;
 let simulatedTime = null;
 let lastFrameTime = performance.now();
 let lastUiUpdate = 0;
-let lastRadiationMinute = null;
+let lastRadiationDateKey = null;
 
 function formatDateTimeLocalUTC(date) {
   const pad = (n) => String(n).padStart(2, '0');
   return `${date.getUTCFullYear()}-${pad(date.getUTCMonth() + 1)}-${pad(date.getUTCDate())}T${pad(date.getUTCHours())}:${pad(date.getUTCMinutes())}:${pad(date.getUTCSeconds())}`;
+}
+
+function formatDateOnlyKey(date) {
+  const y = date.getUTCFullYear();
+  const m = String(date.getUTCMonth() + 1).padStart(2, '0');
+  const d = String(date.getUTCDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
 }
 
 function updateTimeFlowFrame(nowMs) {
@@ -1357,21 +1783,22 @@ function updateTimeFlowFrame(nowMs) {
 
   updateSunFromDate(simulatedTime);
 
-  const minuteKey = Math.floor(simulatedTime.getTime() / 60000);
-  if (minuteKey !== lastRadiationMinute) {
-    updateRadiationOverlay(simulatedTime);
-    lastRadiationMinute = minuteKey;
+  const dateKey = formatDateOnlyKey(simulatedTime);
+  if (dateKey !== lastRadiationDateKey) {
+    fetchRadiationForDate(simulatedTime);
+    lastRadiationDateKey = dateKey;
   }
 
   if (nowMs - lastUiUpdate > 250) {
     datetimeInput.value = formatDateTimeLocalUTC(simulatedTime);
     updateSepPrediction(simulatedTime);
-    if (currentRoute && radiationGrid) {
-      const dose = computeRouteDose(currentRoute, radiationGrid);
-      routeDistanceEl.textContent = `${dose.distanceKm.toFixed(1)} km`;
-      routeTimeEl.textContent = `${dose.hours.toFixed(2)} h`;
-      routeDoseEl.textContent = `${dose.doseMicroSv.toFixed(2)} uSv (${dose.doseSv.toExponential(3)} Sv)`;
+  if (currentRoute && radiationGrid) {
+    const dose = computeRouteDose(currentRoute, radiationGrid);
+    routeDistanceEl.textContent = `${dose.distanceKm.toFixed(1)} km`;
+    routeTimeEl.textContent = `${dose.hours.toFixed(2)} h`;
+    routeDoseEl.textContent = `${dose.doseMicroSv.toFixed(2)} uSv (${dose.doseSv.toExponential(3)} Sv)`;
     }
+    updateAlaraUI();
     lastUiUpdate = nowMs;
   }
 }
@@ -1384,16 +1811,17 @@ toggleTimeFlow.addEventListener('click', () => {
 
 function applyDateTimeSelection(date) {
   simulatedTime = date;
-  lastRadiationMinute = Math.floor(date.getTime() / 60000);
-  updateSunFromDate(date);
-  updateRadiationOverlay(date);
+  lastRadiationDateKey = formatDateOnlyKey(date);
+    updateSunFromDate(date);
+  fetchRadiationForDate(date);
   updateSepPrediction(date);
-  if (currentRoute && radiationGrid) {
-    const dose = computeRouteDose(currentRoute, radiationGrid);
-    routeDistanceEl.textContent = `${dose.distanceKm.toFixed(1)} km`;
-    routeTimeEl.textContent = `${dose.hours.toFixed(2)} h`;
-    routeDoseEl.textContent = `${dose.doseMicroSv.toFixed(2)} uSv (${dose.doseSv.toExponential(3)} Sv)`;
-  }
+    if (currentRoute && radiationGrid) {
+      const dose = computeRouteDose(currentRoute, radiationGrid);
+      routeDistanceEl.textContent = `${dose.distanceKm.toFixed(1)} km`;
+      routeTimeEl.textContent = `${dose.hours.toFixed(2)} h`;
+      routeDoseEl.textContent = `${dose.doseMicroSv.toFixed(2)} uSv (${dose.doseSv.toExponential(3)} Sv)`;
+    }
+  updateAlaraUI();
 }
 
 
@@ -1438,7 +1866,7 @@ saveLogBtn.addEventListener('click', async () => {
   const dateUTC = parseDateTimeLocalAsUTC(sourceValue) || new Date();
 
   if (!radiationGrid) {
-    await updateRadiationOverlay(dateUTC);
+    await fetchRadiationForDate(dateUTC);
   }
   if (!radiationGrid) {
     window.alert('방사선 데이터를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.');
@@ -1597,6 +2025,8 @@ showBtn.addEventListener('click', async () => {
   isRouteSideView = false;
   changeViewBtn.textContent = 'Change view';
   changeViewBtn.style.display = 'inline-flex';
+  if (currentRouteLine) currentRouteLine.visible = true;
+  clearAlaraAltLine();
 
   const baseDistanceKm = greatCircleKm(best.srcLat, best.srcLon, best.dstLat, best.dstLon);
   const baseHours = baseDistanceKm / 900;
@@ -1605,7 +2035,7 @@ showBtn.addEventListener('click', async () => {
 
   if (!radiationGrid) {
     const now = parseDateTimeLocalAsUTC(datetimeInput.value) || new Date();
-    await updateRadiationOverlay(now);
+    await fetchRadiationForDate(now);
   }
   if (radiationGrid) {
     const dose = computeRouteDose(best, radiationGrid);
@@ -1613,6 +2043,7 @@ showBtn.addEventListener('click', async () => {
   } else {
     routeDoseEl.textContent = '-';
   }
+  updateAlaraUI();
 });
 
 changeViewBtn.addEventListener('click', () => {
@@ -1668,7 +2099,7 @@ function animate() {
   requestAnimationFrame(animate);
   updateTimeFlowFrame(performance.now());
   if (!updateCameraTransition()) {
-    controls.update();
+  controls.update();
   }
   sky.rotation.y = earth.rotation.y;
   renderer.render(scene, camera);

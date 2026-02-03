@@ -132,6 +132,11 @@
       align-items: center;
       justify-content: center;
     }
+    #profileBtn.admin {
+      background: #000;
+      color: #fff;
+      font-weight: 700;
+    }
     #profile-menu,
     #nav-menu {
       position: fixed;
@@ -293,11 +298,20 @@
         if (!Array.isArray(parsed) || parsed.length === 0) {
           return defaults;
         }
-        return parsed.map((acc) => ({
+        const normalized = parsed.map((acc) => ({
           ...acc,
           role: acc.role || (acc.id === ADMIN_ACCOUNT_ID ? 'admin' : 'crew'),
           crewCode: acc.crewCode || (acc.id === ACCOUNT_ID ? '001' : ''),
         }));
+        const hasAdmin = normalized.some((acc) => acc.id === ADMIN_ACCOUNT_ID);
+        const hasCrew = normalized.some((acc) => acc.id === ACCOUNT_ID);
+        const merged = normalized.slice();
+        if (!hasAdmin) merged.push(defaults[1]);
+        if (!hasCrew) merged.push(defaults[0]);
+        if (merged.length !== normalized.length) {
+          setAccounts(merged);
+        }
+        return merged;
       } catch (err) {
         return [
           { id: ACCOUNT_ID, password: ACCOUNT_PASSWORD, role: 'crew', crewCode: '001' },
@@ -320,7 +334,8 @@
         topRight.classList.remove('hidden');
         const role = localStorage.getItem(CURRENT_ROLE_KEY);
         myPageLink.textContent = role === 'admin' ? 'Status' : 'My Page';
-        profileBtn.textContent = role === 'admin' ? 'ADMIN' : 'J';
+        profileBtn.textContent = role === 'admin' ? 'A' : 'J';
+        profileBtn.classList.toggle('admin', role === 'admin');
       } else {
         authActions.classList.remove('hidden');
         flightHome.style.display = 'none';
@@ -331,6 +346,7 @@
         profileMenu.style.display = 'none';
         navMenu.style.display = 'none';
         profileBtn.textContent = 'J';
+        profileBtn.classList.remove('admin');
       }
     }
 
