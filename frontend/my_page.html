@@ -35,6 +35,22 @@
       z-index: 5;
     }
     #brand:hover { opacity: 0.85; }
+    #back-to-flight {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+      font-size: 12px;
+      cursor: pointer;
+      z-index: 5;
+    }
+    #back-to-flight:hover {
+      background: rgba(255,255,255,0.16);
+    }
     #left-panel {
       position: relative;
     }
@@ -185,7 +201,8 @@
   </style>
 </head>
 <body>
-  <a id="brand" href="#" data-back>BACK</a>
+  <a id="brand" href="#" data-home>DDCAS</a>
+  <button id="back-to-flight" type="button">Back to flight</button>
   <div id="left-panel">
     <div id="globe-container"></div>
   </div>
@@ -195,6 +212,7 @@
       <div class="panel-header">
         <div class="panel-title">Flight Logs</div>
       </div>
+      <div id="crew-code-label" class="stat-row"><span>Crew code</span><span>-</span></div>
       <div id="log-list"></div>
     </section>
     <div class="spacer mid"></div>
@@ -202,8 +220,6 @@
       <div class="panel-title">Annual total</div>
       <div class="stat-row"><span>Total distance</span><span id="total-distance">0 km</span></div>
       <div class="stat-row"><span>Total dose</span><span id="total-dose">0 uSv</span></div>
-      <div class="stat-row"><span>Public limit (1 mSv)</span><span id="public-limit-pct">0%</span></div>
-      <div class="bar"><div id="public-limit-fill" class="fill"></div></div>
       <div class="stat-row"><span>Crew limit (6 mSv)</span><span id="crew-limit-pct">0%</span></div>
       <div class="bar"><div id="crew-limit-fill" class="fill"></div></div>
     </section>
@@ -217,22 +233,31 @@
   const FLIGHT_RECORDS_KEY = 'ddcas_flight_records';
   const CURRENT_ROLE_KEY = 'ddcas_current_role';
   const CURRENT_USER_KEY = 'ddcas_current_user';
+  const CURRENT_CREW_CODE_KEY = 'ddcas_current_crew_code';
   const logList = document.getElementById('log-list');
   const totalDistanceEl = document.getElementById('total-distance');
   const totalDoseEl = document.getElementById('total-dose');
-  const publicLimitPctEl = document.getElementById('public-limit-pct');
-  const publicLimitFill = document.getElementById('public-limit-fill');
   const crewLimitPctEl = document.getElementById('crew-limit-pct');
   const crewLimitFill = document.getElementById('crew-limit-fill');
-  const backLink = document.querySelector('[data-back]');
+  const homeLink = document.querySelector('[data-home]');
+  const backToFlight = document.getElementById('back-to-flight');
+  const crewCodeLabel = document.getElementById('crew-code-label');
 
   function getCurrentUser() {
     return localStorage.getItem(CURRENT_USER_KEY) || 'guest';
   }
 
+  function getCurrentCrewCode() {
+    return localStorage.getItem(CURRENT_CREW_CODE_KEY) || '';
+  }
+
   const role = localStorage.getItem(CURRENT_ROLE_KEY) || 'crew';
   if (role !== 'crew') {
     window.location.href = './status.html';
+  }
+  const crewCode = getCurrentCrewCode();
+  if (crewCodeLabel) {
+    crewCodeLabel.lastElementChild.textContent = crewCode ? crewCode : '-';
   }
 
   function readLogs() {
@@ -241,10 +266,12 @@
       if (!raw) return [];
       const parsed = JSON.parse(raw);
       if (!Array.isArray(parsed)) return [];
-      const user = getCurrentUser();
+      const crewCodeValue = getCurrentCrewCode();
       return parsed.filter((entry) => {
-        const crew = Array.isArray(entry.crew) ? entry.crew : [];
-        return crew.some((name) => name === user);
+        const codes = Array.isArray(entry.crewCodes) ? entry.crewCodes : [];
+        if (crewCodeValue && codes.includes(crewCodeValue)) return true;
+        const legacyCrew = Array.isArray(entry.crew) ? entry.crew : [];
+        return legacyCrew.includes(getCurrentUser());
       });
     } catch (err) {
       console.warn('Failed to read logs', err);
@@ -328,14 +355,10 @@
   function updateTotals(logs) {
     const totalDistance = logs.reduce((sum, entry) => sum + (entry.distanceKm || 0), 0);
     const totalDose = logs.reduce((sum, entry) => sum + (entry.doseMicroSv || 0), 0);
-    const publicLimit = 1000; // 1 mSv = 1000 uSv
     const crewLimit = 6000;   // 6 mSv = 6000 uSv
-    const publicPct = publicLimit > 0 ? Math.min(100, (totalDose / publicLimit) * 100) : 0;
     const crewPct = crewLimit > 0 ? Math.min(100, (totalDose / crewLimit) * 100) : 0;
     totalDistanceEl.textContent = `${totalDistance.toFixed(1)} km`;
     totalDoseEl.textContent = `${totalDose.toFixed(2)} uSv`;
-    publicLimitPctEl.textContent = `${publicPct.toFixed(1)}%`;
-    publicLimitFill.style.width = `${publicPct}%`;
     crewLimitPctEl.textContent = `${crewPct.toFixed(1)}%`;
     crewLimitFill.style.width = `${crewPct}%`;
   }
@@ -494,9 +517,12 @@
   });
 
   resetLogsButton.addEventListener('click', resetLogs);
-  backLink.addEventListener('click', (event) => {
+  homeLink.addEventListener('click', (event) => {
     event.preventDefault();
-    window.history.back();
+    window.location.href = './index.html';
+  });
+  backToFlight.addEventListener('click', () => {
+    window.location.href = './index_hong.html';
   });
   </script>
 </body>

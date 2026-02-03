@@ -229,6 +229,10 @@
           <option value="admin">Admin</option>
         </select>
       </div>
+      <div id="signin-crew-code-field">
+        <label for="signin-crew-code">Crew code</label>
+        <input id="signin-crew-code" type="text" inputmode="numeric" maxlength="3" placeholder="e.g. 001" />
+      </div>
       <button id="signin-submit" type="submit">Sign in</button>
       <div id="signin-error">이미 있는 ID입니다.</div>
     </form>
@@ -244,6 +248,8 @@
     const signinPassword = document.getElementById('signin-password');
     const signinError = document.getElementById('signin-error');
     const signinRole = document.getElementById('signin-role');
+    const signinCrewCodeField = document.getElementById('signin-crew-code-field');
+    const signinCrewCode = document.getElementById('signin-crew-code');
     const loginForm = document.getElementById('login-form');
     const authActions = document.getElementById('auth-actions');
     const profileBtn = document.getElementById('profileBtn');
@@ -264,6 +270,7 @@
     const LOGIN_STORAGE_KEY = 'ddcas_logged_in';
     const CURRENT_USER_KEY = 'ddcas_current_user';
     const CURRENT_ROLE_KEY = 'ddcas_current_role';
+    const CURRENT_CREW_CODE_KEY = 'ddcas_current_crew_code';
     const ACCOUNTS_KEY = 'ddcas_accounts';
     let isLoggedIn = false;
     const urlParams = new URLSearchParams(window.location.search);
@@ -271,13 +278,14 @@
       localStorage.removeItem(LOGIN_STORAGE_KEY);
       localStorage.removeItem(CURRENT_USER_KEY);
       localStorage.removeItem(CURRENT_ROLE_KEY);
+      localStorage.removeItem(CURRENT_CREW_CODE_KEY);
     }
 
     function getAccounts() {
       try {
         const raw = localStorage.getItem(ACCOUNTS_KEY);
         const defaults = [
-          { id: ACCOUNT_ID, password: ACCOUNT_PASSWORD, role: 'crew' },
+          { id: ACCOUNT_ID, password: ACCOUNT_PASSWORD, role: 'crew', crewCode: '001' },
           { id: ADMIN_ACCOUNT_ID, password: ADMIN_ACCOUNT_PASSWORD, role: 'admin' },
         ];
         if (!raw) return defaults;
@@ -288,10 +296,11 @@
         return parsed.map((acc) => ({
           ...acc,
           role: acc.role || (acc.id === ADMIN_ACCOUNT_ID ? 'admin' : 'crew'),
+          crewCode: acc.crewCode || (acc.id === ACCOUNT_ID ? '001' : ''),
         }));
       } catch (err) {
         return [
-          { id: ACCOUNT_ID, password: ACCOUNT_PASSWORD, role: 'crew' },
+          { id: ACCOUNT_ID, password: ACCOUNT_PASSWORD, role: 'crew', crewCode: '001' },
           { id: ADMIN_ACCOUNT_ID, password: ADMIN_ACCOUNT_PASSWORD, role: 'admin' },
         ];
       }
@@ -362,6 +371,11 @@
       localStorage.setItem(LOGIN_STORAGE_KEY, 'true');
       localStorage.setItem(CURRENT_USER_KEY, idValue);
       localStorage.setItem(CURRENT_ROLE_KEY, matched.role || 'crew');
+      if ((matched.role || 'crew') === 'crew') {
+        localStorage.setItem(CURRENT_CREW_CODE_KEY, matched.crewCode || '');
+      } else {
+        localStorage.removeItem(CURRENT_CREW_CODE_KEY);
+      }
       setLoggedInUI();
       loginId.value = '';
       loginPassword.value = '';
@@ -373,18 +387,43 @@
       const passwordValue = signinPassword.value;
       const accounts = getAccounts();
       const exists = accounts.some((acc) => acc.id === idValue);
+      const role = signinRole.value;
+      const crewCodeValue = signinCrewCode.value.trim();
+      const codeExists = accounts.some((acc) => acc.crewCode === crewCodeValue);
       if (exists || idValue === '') {
         signinError.style.display = 'block';
         return;
       }
+      if (role === 'crew' && !/^\d{3}$/.test(crewCodeValue)) {
+        signinError.textContent = 'Crew code는 세자리 숫자여야 합니다.';
+        signinError.style.display = 'block';
+        return;
+      }
+      if (role === 'crew' && codeExists) {
+        signinError.textContent = '이미 사용 중인 Crew code입니다.';
+        signinError.style.display = 'block';
+        return;
+      }
+      signinError.textContent = '이미 있는 ID입니다.';
       signinError.style.display = 'none';
-      accounts.push({ id: idValue, password: passwordValue, role: signinRole.value });
+      accounts.push({
+        id: idValue,
+        password: passwordValue,
+        role,
+        crewCode: role === 'crew' ? crewCodeValue : '',
+      });
       setAccounts(accounts);
       signinId.value = '';
       signinPassword.value = '';
       signinRole.value = 'crew';
+      signinCrewCode.value = '';
       authActions.classList.remove('hidden');
       signinForm.style.display = 'none';
+    });
+
+    signinRole.addEventListener('change', () => {
+      const isCrew = signinRole.value === 'crew';
+      signinCrewCodeField.style.display = isCrew ? 'block' : 'none';
     });
 
     profileBtn.addEventListener('click', () => {
@@ -430,6 +469,7 @@
       localStorage.removeItem(LOGIN_STORAGE_KEY);
       localStorage.removeItem(CURRENT_USER_KEY);
       localStorage.removeItem(CURRENT_ROLE_KEY);
+      localStorage.removeItem(CURRENT_CREW_CODE_KEY);
       setLoggedInUI();
       window.location.href = './index.html';
     });

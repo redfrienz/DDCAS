@@ -129,6 +129,46 @@
     #time-ui input::-webkit-calendar-picker-indicator {
       filter: invert(1);
     }
+    #time-ui .pred-section {
+      display: grid;
+      gap: 6px;
+      margin-bottom: 6px;
+      padding: 8px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.04);
+    }
+    #time-ui .pred-title {
+      font-size: 14px;
+      font-weight: 600;
+      opacity: 0.95;
+    }
+    #time-ui .pred-value {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 72px;
+      min-height: 28px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.3);
+      background: rgba(0,0,0,0.2);
+      font-size: 14px;
+    }
+    #time-ui .pred-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      opacity: 0.9;
+    }
+    #time-ui .pred-table th {
+      font-weight: 600;
+    }
+    #time-ui .pred-table th,
+    #time-ui .pred-table td {
+      padding: 4px 0;
+      text-align: left;
+    }
     #radiation-panel {
       position: absolute;
       bottom: 16px;
@@ -404,6 +444,20 @@
 <body>
 <a id="brand" href="./index.html">DDCAS</a>
 <div id="time-ui">
+  <div class="pred-section">
+    <div class="pred-title">Tomorrow's Danger Prediction</div>
+    <table class="pred-table">
+      <thead>
+        <tr><th>Probability</th><th>Intensity</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span id="predEvent" class="pred-value">-</span></td>
+          <td><span id="predIntensity" class="pred-value">-</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
   <label for="datetimeInput">Date & Time (GST)</label>
   <div class="time-row">
     <input id="datetimeInput" type="datetime-local" lang="en" step="1" />
@@ -482,7 +536,7 @@
       </label>
     </div>
     <div class="modal-section">
-      <div class="modal-subtitle">Crew members</div>
+      <div class="modal-subtitle">Crew codes</div>
       <div id="crew-list"></div>
       <button id="add-crew" type="button">+ Add crew</button>
     </div>
@@ -876,8 +930,11 @@ const FLIGHT_RECORDS_KEY = 'ddcas_flight_records';
 const LOGIN_STORAGE_KEY = 'ddcas_logged_in';
 const CURRENT_USER_KEY = 'ddcas_current_user';
 const CURRENT_ROLE_KEY = 'ddcas_current_role';
+const CURRENT_CREW_CODE_KEY = 'ddcas_current_crew_code';
 const logoutButton = document.getElementById('logout-button');
 const profilePageLink = document.getElementById('profile-page-link');
+const predEventEl = document.getElementById('predEvent');
+const predIntensityEl = document.getElementById('predIntensity');
 
 // NEW: legend elements
 const legendMinEl = document.getElementById('legendMin');
@@ -948,13 +1005,67 @@ function parseDateTimeLocalAsUTC(value) {
   ));
 }
 
-function createCrewRow(name = '') {
+let sepPredictionMap = null;
+
+async function loadSepPredictions() {
+  if (sepPredictionMap) return sepPredictionMap;
+  const map = new Map();
+  try {
+    const res = await fetch('./forecast_sep/sep_pred_data/pred_2000.csv');
+    if (!res.ok) throw new Error(`SEP csv load failed: ${res.status}`);
+    const text = await res.text();
+    const lines = text.trim().split('\n');
+    lines.shift();
+    for (const line of lines) {
+      const [date, pEvent, intensity] = line.split(',');
+      if (!date) continue;
+      map.set(date.trim(), {
+        pEvent: Number(pEvent),
+        intensity: Number(intensity),
+      });
+    }
+  } catch (err) {
+    console.warn('Failed to load SEP predictions', err);
+  }
+  sepPredictionMap = map;
+  return map;
+}
+
+function formatDateKey(date) {
+  const y = date.getUTCFullYear();
+  const m = String(date.getUTCMonth() + 1).padStart(2, '0');
+  const d = String(date.getUTCDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
+async function updateSepPrediction(date) {
+  const map = await loadSepPredictions();
+  if (!map || map.size === 0) {
+    predEventEl.textContent = '-';
+    predIntensityEl.textContent = '-';
+    return;
+  }
+  const tomorrow = new Date(date.getTime() + 86400000);
+  const key = formatDateKey(tomorrow);
+  const entry = map.get(key);
+  if (!entry) {
+    predEventEl.textContent = '-';
+    predIntensityEl.textContent = '-';
+    return;
+  }
+  predEventEl.textContent = entry.pEvent.toFixed(4);
+  predIntensityEl.textContent = entry.intensity.toFixed(0);
+}
+
+function createCrewRow(code = '') {
   const row = document.createElement('div');
   row.className = 'crew-row';
   const input = document.createElement('input');
   input.type = 'text';
-  input.placeholder = 'Crew name';
-  input.value = name;
+  input.inputMode = 'numeric';
+  input.maxLength = 3;
+  input.placeholder = 'Crew code (3 digits)';
+  input.value = code;
   const remove = document.createElement('button');
   remove.type = 'button';
   remove.textContent = 'Remove';
@@ -1148,13 +1259,13 @@ toggleRadiation.addEventListener('change', () => {
    ============================ */
 
 function setInitialDateTime() {
-  const now = new Date();
-  const pad = (n) => String(n).padStart(2, '0');
-  const utcValue = `${now.getUTCFullYear()}-${pad(now.getUTCMonth() + 1)}-${pad(now.getUTCDate())}T${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}`;
-  datetimeInput.value = utcValue;
-
-  updateSunFromDate(now);
-  updateRadiationOverlay(now);
+  const initial = new Date(Date.UTC(2000, 0, 1, 0, 0, 0));
+  datetimeInput.value = formatDateTimeLocalUTC(initial);
+  simulatedTime = initial;
+  lastRadiationMinute = Math.floor(initial.getTime() / 60000);
+  updateSunFromDate(initial);
+  updateRadiationOverlay(initial);
+  updateSepPrediction(initial);
 }
 
 
@@ -1191,6 +1302,7 @@ function updateTimeFlowFrame(nowMs) {
 
   if (nowMs - lastUiUpdate > 250) {
     datetimeInput.value = formatDateTimeLocalUTC(simulatedTime);
+    updateSepPrediction(simulatedTime);
     if (currentRoute && radiationGrid) {
       const dose = computeRouteDose(currentRoute, radiationGrid);
       routeDistanceEl.textContent = `${dose.distanceKm.toFixed(1)} km`;
@@ -1206,6 +1318,21 @@ toggleTimeFlow.addEventListener('click', () => {
   toggleTimeFlow.textContent = isTimeRunning ? 'Pause' : 'Resume';
   lastFrameTime = performance.now();
 });
+
+function applyDateTimeSelection(date) {
+  simulatedTime = date;
+  lastRadiationMinute = Math.floor(date.getTime() / 60000);
+  updateSunFromDate(date);
+  updateRadiationOverlay(date);
+  updateSepPrediction(date);
+  if (currentRoute && radiationGrid) {
+    const dose = computeRouteDose(currentRoute, radiationGrid);
+    routeDistanceEl.textContent = `${dose.distanceKm.toFixed(1)} km`;
+    routeTimeEl.textContent = `${dose.hours.toFixed(2)} h`;
+    routeDoseEl.textContent = `${dose.doseMicroSv.toFixed(2)} uSv (${dose.doseSv.toExponential(3)} Sv)`;
+  }
+}
+
 
 useCurrentTime.addEventListener('change', () => {
   syncLogTimeInput();
@@ -1232,11 +1359,16 @@ saveLogBtn.addEventListener('click', async () => {
     window.alert('먼저 노선을 선택하고 Show를 눌러주세요.');
     return;
   }
-  const crewNames = Array.from(crewListEl.querySelectorAll('input'))
+  const crewCodes = Array.from(crewListEl.querySelectorAll('input'))
     .map((input) => input.value.trim())
     .filter(Boolean);
-  if (crewNames.length === 0) {
-    window.alert('탑승 승무원을 최소 1명 입력해주세요.');
+  if (crewCodes.length === 0) {
+    window.alert('탑승 승무원 코드를 최소 1명 입력해주세요.');
+    return;
+  }
+  const invalidCode = crewCodes.find((code) => !/^\d{3}$/.test(code));
+  if (invalidCode) {
+    window.alert('Crew code는 세자리 숫자여야 합니다.');
     return;
   }
   const sourceValue = useCurrentTime.checked ? datetimeInput.value : logDatetimeInput.value;
@@ -1266,7 +1398,7 @@ saveLogBtn.addEventListener('click', async () => {
     hours: dose.hours,
     doseMicroSv: dose.doseMicroSv,
     doseSv: dose.doseSv,
-    crew: crewNames,
+    crewCodes,
     addedBy: getCurrentUser(),
   };
 
@@ -1292,16 +1424,7 @@ datetimeInput.addEventListener('change', () => {
   if (!value) return;
   const date = parseDateTimeLocalAsUTC(value);
   if (date && !Number.isNaN(date.getTime())) {
-    simulatedTime = date;
-    lastRadiationMinute = Math.floor(date.getTime() / 60000);
-    updateSunFromDate(date);
-    updateRadiationOverlay(date);
-    if (currentRoute && radiationGrid) {
-      const dose = computeRouteDose(currentRoute, radiationGrid);
-      routeDistanceEl.textContent = `${dose.distanceKm.toFixed(1)} km`;
-      routeTimeEl.textContent = `${dose.hours.toFixed(2)} h`;
-      routeDoseEl.textContent = `${dose.doseMicroSv.toFixed(2)} uSv (${dose.doseSv.toExponential(3)} Sv)`;
-    }
+    applyDateTimeSelection(date);
   }
 });
 

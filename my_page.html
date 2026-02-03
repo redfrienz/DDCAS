@@ -202,8 +202,6 @@
       <div class="panel-title">Annual total</div>
       <div class="stat-row"><span>Total distance</span><span id="total-distance">0 km</span></div>
       <div class="stat-row"><span>Total dose</span><span id="total-dose">0 uSv</span></div>
-      <div class="stat-row"><span>Public limit (1 mSv)</span><span id="public-limit-pct">0%</span></div>
-      <div class="bar"><div id="public-limit-fill" class="fill"></div></div>
       <div class="stat-row"><span>Crew limit (6 mSv)</span><span id="crew-limit-pct">0%</span></div>
       <div class="bar"><div id="crew-limit-fill" class="fill"></div></div>
     </section>
@@ -220,8 +218,6 @@
   const logList = document.getElementById('log-list');
   const totalDistanceEl = document.getElementById('total-distance');
   const totalDoseEl = document.getElementById('total-dose');
-  const publicLimitPctEl = document.getElementById('public-limit-pct');
-  const publicLimitFill = document.getElementById('public-limit-fill');
   const crewLimitPctEl = document.getElementById('crew-limit-pct');
   const crewLimitFill = document.getElementById('crew-limit-fill');
   const backLink = document.querySelector('[data-back]');
@@ -328,14 +324,10 @@
   function updateTotals(logs) {
     const totalDistance = logs.reduce((sum, entry) => sum + (entry.distanceKm || 0), 0);
     const totalDose = logs.reduce((sum, entry) => sum + (entry.doseMicroSv || 0), 0);
-    const publicLimit = 1000; // 1 mSv = 1000 uSv
     const crewLimit = 6000;   // 6 mSv = 6000 uSv
-    const publicPct = publicLimit > 0 ? Math.min(100, (totalDose / publicLimit) * 100) : 0;
     const crewPct = crewLimit > 0 ? Math.min(100, (totalDose / crewLimit) * 100) : 0;
     totalDistanceEl.textContent = `${totalDistance.toFixed(1)} km`;
     totalDoseEl.textContent = `${totalDose.toFixed(2)} uSv`;
-    publicLimitPctEl.textContent = `${publicPct.toFixed(1)}%`;
-    publicLimitFill.style.width = `${publicPct}%`;
     crewLimitPctEl.textContent = `${crewPct.toFixed(1)}%`;
     crewLimitFill.style.width = `${crewPct}%`;
   }

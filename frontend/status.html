@@ -35,6 +35,22 @@
       z-index: 5;
     }
     #brand:hover { opacity: 0.85; }
+    #back-to-flight {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+      font-size: 12px;
+      cursor: pointer;
+      z-index: 5;
+    }
+    #back-to-flight:hover {
+      background: rgba(255,255,255,0.16);
+    }
     #left-panel {
       position: relative;
     }
@@ -177,7 +193,8 @@
   </style>
 </head>
 <body>
-  <a id="brand" href="./index_hong.html">DDCAS</a>
+  <a id="brand" href="./index.html">DDCAS</a>
+  <button id="back-to-flight" type="button">Back to flight</button>
   <div id="left-panel">
     <div id="globe-container"></div>
   </div>
@@ -211,6 +228,7 @@
   const statusEmpty = document.getElementById('status-empty');
   const yearSelect = document.getElementById('year-select');
   const logList = document.getElementById('log-list');
+  const backToFlight = document.getElementById('back-to-flight');
   const selectedCrewEl = document.getElementById('selected-crew');
 
   const role = localStorage.getItem(CURRENT_ROLE_KEY) || 'crew';
@@ -253,6 +271,12 @@
   function getEntryYear(entry) {
     const date = getEntryDate(entry);
     return date ? date.getUTCFullYear() : null;
+  }
+
+  function getCrewCodes(entry) {
+    if (Array.isArray(entry.crewCodes)) return entry.crewCodes;
+    if (Array.isArray(entry.crew)) return entry.crew;
+    return [];
   }
 
   function formatDate(entry) {
@@ -302,7 +326,7 @@
     const header = document.createElement('div');
     header.className = 'status-header';
     header.innerHTML = `
-      <span>Crew</span>
+      <span>Crew code</span>
       <span>Flights</span>
       <span>Total hours</span>
       <span>Total dose</span>
@@ -312,9 +336,9 @@
 
     const aggregates = new Map();
     for (const record of records) {
-      const crewList = Array.isArray(record.crew) ? record.crew : [];
-      for (const name of crewList) {
-        const key = name.trim();
+      const crewList = getCrewCodes(record);
+      for (const code of crewList) {
+        const key = code.trim();
         if (!key) continue;
         if (!aggregates.has(key)) {
           aggregates.set(key, { flights: 0, hours: 0, doseMicroSv: 0 });
@@ -409,8 +433,8 @@
     if (selectedCrew) {
       selectedCrewEl.textContent = `- ${selectedCrew}`;
       const crewRecords = filtered.filter((entry) => {
-        const crew = Array.isArray(entry.crew) ? entry.crew : [];
-        return crew.includes(selectedCrew);
+        const codes = getCrewCodes(entry);
+        return codes.includes(selectedCrew);
       });
       renderLogs(crewRecords);
     } else {
@@ -428,6 +452,10 @@
     if (!row) return;
     selectedCrew = row.dataset.crew || null;
     refreshUI();
+  });
+
+  backToFlight.addEventListener('click', () => {
+    window.location.href = './index_hong.html';
   });
 
   refreshUI();
