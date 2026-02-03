@@ -1,0 +1,143 @@
+ ========= SOHO/LASCO CME CATALOG==========      LAST UPDATED: 2024/04/25 15:21
+ Date       Time     Central  Width  Linear   2nd order speed      Accel     Mass      Kinetic    MPA   Remarks
+                        PA           Speed  initial final   20R                        Energy                 
+
+1996/08/01  05:59:09    163     16    137    ----   ----   ----   ------    -------    -------    162   Newly inserted on 2024/05/01.; Very Poor Event; Only 2 points; Only C2
+1996/08/01  12:36:35    274     35    499     451    551    615      7.4*   2.6e+14*   3.2e+29*   270   
+1996/08/01  15:08:06     86     23    214      73    367    418     11.1*   2.6e+13    5.8e+27     90   Newly inserted on 2024/05/01.; Very Poor Event; Only C3
+1996/08/01  18:12:21    210     82    118      94    142    324      4.0*   9.8e+13    6.8e+27    229   Poor Event; Only C2
+1996/08/01  19:18:48    338     11    197    ----   ----   ----   ------    -------    -------    336   Newly inserted on 2024/05/01.; Very Poor Event; Only 2 points; Only C2
+1996/08/01  21:36:28    268     38    293     311    274      0     -6.1*   -------    -------    261   Newly inserted on 2024/05/01.; Very Poor Event; Only 3 points; Only C2
+1996/08/02  00:36:36     87     27    249     248    251    252      0.1*   6.6e+13    2.0e+28     88   Newly inserted on 2024/05/01.; Very Poor Event
+1996/08/02  04:44:46     79     11    254     272    235    222     -2.0*   -------    -------     89   Newly inserted on 2024/05/01.; Very Poor Event; Only C3
+1996/08/02  08:17:27    173      9    577    ----   ----   ----   ------    -------    -------    171   Newly inserted on 2024/05/01.; Very Poor Event; Only 2 points; Only C2
+1996/08/02  11:16:59     89     36    111      74    147    342      4.8*   -------    -------     88   Newly inserted on 2024/05/01.; Very Poor Event; Only C2
+1996/08/02  13:13:16    229     14    152     101    198    525     11.6*   -------    -------    228   Newly inserted on 2024/05/01.; Poor Event; Only 3 points; Only C2
+1996/08/03  01:45:09    173      9    451    ----   ----   ----   ------    -------    -------    172   Newly inserted on 2024/05/01.; Very Poor Event; Only 2 points
+1996/08/03  01:45:09     83     36    108      56    158    393      7.4*   -------    -------     87   Newly inserted on 2024/05/01.; Very Poor Event; Only 3 points
+1996/08/03  03:34:16     86     42    225     109    341    430      8.7*   -------    -------     90   Newly inserted on 2024/05/01.; Very Poor Event
+1996/08/03  11:45:05      3      8    182    ----   ----   ----   ------    -------    -------      4   Newly inserted on 2024/05/01.; Very Poor Event; Only 2 points; Only C2
+1996/08/03  11:45:05     86     31    236     309    162      0    -20.4*   -------    -------     88   Newly inserted on 2024/05/01.; Very Poor Event; Only 3 points; Only C2
+1996/08/03  13:45:07    194      6    228    ----   ----   ----   ------    -------    -------    199   Newly inserted on 2024/05/01.; Very Poor Event; Only 2 points; Only C2
+1996/08/03  19:45:37    231     26     71      59     84    128      0.5*   -------    -------    240   Poor Event
+1996/08/04  04:41:21    233     38    141     143    139    132     -0.1*   -------    -------    240   Newly inserted on 2024/05/01.; Poor Event
+1996/08/04  15:22:28     26     12     85    ----   ----   ----   ------    -------    -------     29   Newly inserted on 2024/05/01.; Very Poor Event; Only 2 points; Only C2
+1996/08/04  22:06:15    121     11    212     268    159      0    -17.4*   -------    -------    110   Newly inserted on 2024/05/01.; Very Poor Event; Only 3 points; Only C2
+1996/08/04  22:47:15     24      9    159    ----   ----   ----   ------    -------    -------     27   Newly inserted on 2024/05/01.; Very Poor Event; Only 2 points; Only C2
+1996/08/05  02:48:42    267     38    191     169    214    248      1.8*   -------    -------    262   Newly inserted on 2024/05/01.; Very Poor Event; Only C3
+1996/08/05  03:58:04     89     31    275     257    293    296      1.0*   -------    -------     94   Newly inserted on 2024/05/01.; Poor Event
+1996/08/05  10:11:58     24     12    249    ----   ----   ----   ------    -------    -------     29   Newly inserted on 2024/05/01.; Very Poor Event; Only 2 points; Only C2
+1996/08/05  22:03:07     91     40    153     109    196    553     12.4*   -------    -------     93   Newly inserted on 2024/05/01.; Very Poor Event; Only 3 points; Only C2
+1996/08/06  01:50:05     25     14    316     319    313    287     -0.9*   -------    -------     32   Newly inserted on 2024/05/01.; Very Poor Event; Only 3 points
+1996/08/06  03:00:05    189      5    402    ----   ----   ----   ------    -------    -------    204   Newly inserted on 2024/05/01.; Very Poor Event; Only 2 points
+1996/08/06  03:00:05    186      8    238    ----   ----   ----   ------    -------    -------    192   Newly inserted on 2024/05/01.; Very Poor Event; Only 2 points; Only C2
+1996/08/06  14:45:05     28      7    109    ----   ----   ----   ------    -------    -------     32   Newly inserted on 2024/05/01.; Very Poor Event; Only 2 points; Only C2
+1996/08/06  14:45:05    190      7    120    ----   ----   ----   ------    -------    -------    194   Newly inserted on 2024/05/01.; Very Poor Event; Only 2 points; Only C2
+1996/08/06  16:30:45    259     75    189     171    209    206      0.7*   2.3e+14    4.1e+28    265   Newly inserted on 2024/05/01.; Poor Event
+1996/08/06  19:16:00    256     70    266     245    288    293      1.2*   2.3e+14    8.3e+28    266   Newly inserted on 2024/05/01.; Poor Event
+1996/08/07  13:15:05    242     27   ----    ----   ----   ----   ------    -------    -------    249   Very Poor Event; Only C2; Unable to measure
+1996/08/07  17:15:05    256     61    182     183    181    178     -0.1*   -------    -------    249   Newly inserted on 2024/05/01.; Poor Event
+1996/08/07  22:50:05     86     42     50      49     50     60      0.1*   -------    -------     94   Newly inserted on 2024/05/01.; Very Poor Event; Only C2
+1996/08/07  22:50:05    264     60    186     300     83      0    -11.3*   -------    -------    256   Newly inserted on 2024/05/01.; Very Poor Event; Only 3 points
+1996/08/08  02:23:51     91     53     61      23     99    333      4.8*   -------    -------     92   Newly inserted on 2024/05/01.; Very Poor Event; Only 3 points; Only C2
+1996/08/08  04:45:59     94     42     60      88     34      0     -3.0*   -------    -------     92   Newly inserted on 2024/05/01.; Very Poor Event; Only C2
+1996/08/08  12:55:05    282     21     95      74    115    201      1.5*   -------    -------    278   Newly inserted on 2024/05/01.; Very Poor Event
+1996/08/08  12:55:05    239     44    118       0    258    386      6.4*   -------    -------    249   Newly inserted on 2024/05/01.; Very Poor Event
+1996/08/08  19:15:05    242     41    158     127    187    272      2.8*   -------    -------    255   Newly inserted on 2024/05/01.; Very Poor Event
+1996/08/08  20:30:08    279     33     42      40     44     65      0.1*   -------    -------    280   Newly inserted on 2024/05/01.; Very Poor Event
+1996/08/09  06:43:25     88     29    155     261     56      0    -26.0*   -------    -------     90   Newly inserted on 2024/05/01.; Very Poor Event
+1996/08/09  07:46:00    160      5    262    ----   ----   ----   ------    -------    -------    157   Newly inserted on 2024/05/01.; Very Poor Event; Only 2 points; Only C2
+1996/08/09  09:30:05    330     12    125    ----   ----   ----   ------    -------    -------    325   Newly inserted on 2024/05/01.; Very Poor Event; Only 2 points; Only C2
+1996/08/10  01:55:05    283     39    131     105    159    239      2.1*   -------    -------    279   Newly inserted on 2024/05/01.; Poor Event
+1996/08/10  09:25:05     68     68    148     133    164    201      1.0*   4.6e+14    5.0e+28     65   Poor Event
+1996/08/10  16:55:05    290     42    413     244    575    652     17.5    9.1e+14    7.8e+29    285   
+1996/08/11  06:46:25    284     28    410     513    311    240     -9.1*   -------    -------    284   Newly inserted on 2024/05/01.; Poor Event
+1996/08/11  10:25:06     92     34    122     117    127    142      0.3*   -------    -------     97   Newly inserted on 2024/05/01.; Poor Event
+1996/08/11  12:37:05     89     22    103      30    157    269      3.5*   5.0e+12    2.7e+26     95   Newly inserted on 2024/05/01.; Poor Event
+1996/08/12  01:50:50     87     51    137      93    180    328      4.2*   5.6e+13    5.2e+27     94   Newly inserted on 2024/05/01.; Very Poor Event
+1996/08/12  02:40:05    264     59    139     138    141    142      0.0*   9.3e+13    9.0e+27    282   Newly inserted on 2024/05/01.; Poor Event
+1996/08/12  02:40:05    270     74    161     136    185    292      3.0*   1.2e+14    1.5e+28    262   Newly inserted on 2024/05/01.; Very Poor Event
+1996/08/12  06:25:05    266     60    161     178    145     98     -0.9*   1.2e+14    1.6e+28    265   Newly inserted on 2024/05/01.; Very Poor Event
+1996/08/12  10:10:05      7      7    136    ----   ----   ----   ------    -------    -------      9   Newly inserted on 2024/05/01.; Very Poor Event; Only 2 points; Only C2
+1996/08/12  16:16:56     89     37    210    ----   ----   ----   ------    -------    -------     89   Poor Event; Only 2 points; Only C3
+1996/08/12  16:20:27    287     11    201     130    275    339      5.3*   -------    -------    286   Newly inserted on 2024/05/01.; Poor Event; Only C3
+1996/08/13  04:43:48    276     75    177     291     64      0     -5.7*   -------    -------    280   Newly inserted on 2024/05/01.; Poor Event; Only C3
+1996/08/13  07:15:05    259     92    298     332    266    243     -2.2*   4.8e+14*   2.2e+29*   263   
+1996/08/13  15:13:05     98     56    228     240    216    223     -0.4    3.5e+14    9.1e+28     92   Newly inserted on 2024/05/01.
+1996/08/13  16:09:18    258    153    620     637    604    610     -1.8*   5.0e+15*   9.6e+30*   231   Only 3 points; Only C3; Partial Halo
+1996/08/13  23:05:27    247     13    367    ----   ----   ----   ------    -------    -------    249   Newly inserted on 2024/05/01.; Very Poor Event; Only 2 points; Only C2
+1996/08/13  23:46:30    254     16     41      57     24      0     -0.5*   -------    -------    256   Newly inserted on 2024/05/01.; Very Poor Event; Only 3 points
+1996/08/14  05:26:32     96     40    186     234    141      0     -2.6*   9.6e+13    1.7e+28     98   Newly inserted on 2024/05/01.; Very Poor Event
+1996/08/14  07:26:22    204    169    244     233    254    292      1.4*   5.3e+12*   1.6e+27*   231   Poor Event; Only 3 points; Partial Halo
+1996/08/14  08:29:25    307     15    272     249    299    296      1.2*   -------    -------    301   Newly inserted on 2024/05/01.; Poor Event
+1996/08/14  09:30:05      6      7    365    ----   ----   ----   ------    -------    -------      6   Newly inserted on 2024/05/01.; Very Poor Event; Only 2 points
+1996/08/14  15:36:06    129     48    166     151    181    192      0.7*   -------    -------    125   Newly inserted on 2024/05/01.; Only C3
+1996/08/14  19:30:09    124     54    128     155    101      0     -1.1*   -------    -------    122   Newly inserted on 2024/05/01.; Poor Event
+1996/08/14  19:30:09    229    235    691    ----   ----   ----   ------    3.1e+15*   7.3e+30*   237   Only 2 points; Only C3; Partial Halo
+1996/08/15  02:30:30    120     21    199     203    196    191     -0.2*   -------    -------    120   Newly inserted on 2024/05/01.; Very Poor Event
+1996/08/15  11:15:05    335      6    183    ----   ----   ----   ------    -------    -------    337   Newly inserted on 2024/05/01.; Very Poor Event; Only 2 points; Only C2
+1996/08/15  12:10:05    270     33    104      45    169    437      8.0*   -------    -------    265   Newly inserted on 2024/05/01.; Very Poor Event; Only 3 points; Only C2
+1996/08/15  15:11:38    116     34    198      56    357   1010     46.3*   -------    -------    108   Newly inserted on 2024/05/01.; Very Poor Event; Only 3 points; Only C2
+1996/08/15  20:20:10    130     34    165     176    156    153     -0.4*   1.3e+14    1.7e+28    129   Newly inserted on 2024/05/01.; Poor Event; Only C3
+1996/08/15  21:00:05    123     69    156     122    187    245      2.2*   3.6e+14    4.4e+28    121   
+1996/08/16  05:00:05    271     24     91      35    153    456      9.0*   -------    -------    270   Newly inserted on 2024/05/01.; Very Poor Event; Only 3 points; Only C2
+1996/08/16  11:50:28     69     12    134     249     30      0    -37.9*   -------    -------     71   Newly inserted on 2024/05/01.; Very Poor Event; Only 3 points; Only C2
+1996/08/16  13:27:00    295     86    368     138    588   1004     42.3*   2.0e+14*   1.3e+29*   269   Newly inserted on 2024/05/01.; Very Poor Event
+1996/08/16  14:14:06   Halo    360    364     336    390    399      2.0*   5.6e+14*   3.7e+29*   158   
+1996/08/16  22:35:36    140     26     96    ----   ----   ----   ------    -------    -------    138   Newly inserted on 2024/05/01.; Very Poor Event; Only 2 points; Only C2
+1996/08/17  03:17:54    127     12    133       9    272    800     28.0*   -------    -------    126   Newly inserted on 2024/05/01.; Very Poor Event; Only 3 points; Only C2
+1996/08/17  12:47:40    354      8    367    ----   ----   ----   ------    -------    -------    349   Newly inserted on 2024/05/01.; Very Poor Event; Only 2 points; Only C2
+1996/08/17  12:47:40    117     31    244     251    237    233     -0.4*   -------    -------    117   Newly inserted on 2024/05/01.; Very Poor Event
+1996/08/17  15:38:27    326      8    367    ----   ----   ----   ------    -------    -------    322   Newly inserted on 2024/05/01.; Very Poor Event; Only 2 points; Only C2
+1996/08/18  05:49:50     70     19    167     133    205    241      1.7*   -------    -------     61   Newly inserted on 2024/05/01.; Very Poor Event
+1996/08/18  08:52:56    260     34     52      52     53     59      0.0*   -------    -------    264   Newly inserted on 2024/05/01.; Very Poor Event
+1996/08/18  11:39:09    114     28    167     241     97      0    -11.5*   -------    -------    113   Newly inserted on 2024/05/01.; Very Poor Event; Only C2
+1996/08/18  12:32:43    349      6    178    ----   ----   ----   ------    -------    -------    346   Newly inserted on 2024/05/01.; Very Poor Event; Only 2 points; Only C2
+1996/08/18  16:03:48    107     31    139     212     70      0     -9.5*   -------    -------    113   Newly inserted on 2024/05/01.; Very Poor Event
+1996/08/18  23:20:38    112     31    188     228    149      0     -3.5*   -------    -------    110   Newly inserted on 2024/05/01.; Poor Event
+1996/08/19  03:46:38    117     27    192      94    286    367      5.6*   -------    -------    103   Newly inserted on 2024/05/01.; Poor Event
+1996/08/19  06:10:16    256     18    195     191    200    207      0.3*   -------    -------    264   Newly inserted on 2024/05/01.; Poor Event
+1996/08/19  11:18:27    127     82    406     352    467    465      4.7    1.8e+15    1.5e+30    125   
+1996/08/19  17:09:41    267     42     78       0    154    278      3.4*   -------    -------    268   Newly inserted on 2024/05/01.; Very Poor Event
+1996/08/19  18:01:41    358      7     51    ----   ----   ----   ------    -------    -------    356   Newly inserted on 2024/05/01.; Very Poor Event; Only 2 points; Only C2
+1996/08/19  22:40:17    122     35    216      84    357    353      5.2*   -------    -------    119   Newly inserted on 2024/05/01.
+1996/08/20  02:00:06    121     23    256     155    354    350      4.8    6.2e+14    2.0e+29    118   
+1996/08/20  04:45:05     75     18    135      88    182    546     12.9*   -------    -------     76   Newly inserted on 2024/05/01.; Very Poor Event; Only 3 points; Only C2
+1996/08/20  04:45:05    263     24    115      45    184    525     12.7*   -------    -------    266   Newly inserted on 2024/05/01.; Very Poor Event; Only C2
+1996/08/20  09:09:02    121     24    218     199    235    256      1.3*   -------    -------    120   Newly inserted on 2024/05/01.
+1996/08/20  09:09:02    272     39    152      98    207    576     14.9*   -------    -------    267   Newly inserted on 2024/05/01.; Very Poor Event; Only 3 points; Only C2
+1996/08/20  11:10:05    275     42    172     196    149    109     -1.2    1.9e+14    2.8e+28    284   
+1996/08/21  08:08:40    266     33    140     107    174    299      3.5*   -------    -------    268   Newly inserted on 2024/05/01.; Poor Event
+1996/08/21  22:48:51     74     23    312     124    500    426     19.5*   -------    -------     70   Newly inserted on 2024/05/01.; Very Poor Event; Only C3
+1996/08/21  22:48:51     53     32    196     290    110      0    -16.7*   -------    -------     46   Newly inserted on 2024/05/01.; Very Poor Event; Only 3 points; Only C3
+1996/08/21  22:48:51    291     41    286     292    280    282     -0.6*   6.2e+14*   2.6e+29*   274   Only C3
+1996/08/22  08:38:43     91    125    979     753   1220   1035     51.9*   5.2e+15*   2.5e+31*   129   Only 3 points; Only C3; Partial Halo
+1996/08/22  09:09:24    268     29    413     682     72    224    -18.6*   -------    -------    269   Newly inserted on 2024/05/01.; Poor Event
+1996/08/22  17:41:50    272     47    168     101    235    283      3.5*   -------    -------    267   Newly inserted on 2024/05/01.; Poor Event
+1996/08/23  23:20:13    130     26    323     280    368    333      2.6*   7.7e+13    4.0e+28    125   Newly inserted on 2024/05/01.; Poor Event; Only C3
+1996/08/24  02:02:05     82     36    233     289    175     67     -3.8*   5.3e+13    1.4e+28     68   Newly inserted on 2024/05/01.; Very Poor Event
+1996/08/24  13:35:31    109     22    338     319    358    419      3.6*   -------    -------    104   Newly inserted on 2024/05/01.; Very Poor Event
+1996/08/24  16:38:43    278     60    213     140    295    289      3.1*   -------    -------    274   Newly inserted on 2024/05/01.; Very Poor Event
+1996/08/24  20:55:05      0     14    346    ----   ----   ----   ------    -------    -------    360   Newly inserted on 2024/05/01.; Very Poor Event; Only 2 points; Only C2
+1996/08/25  02:45:05    255     26    147     141    153    164      0.4*   -------    -------    252   Newly inserted on 2024/05/01.; Very Poor Event; Only C3
+1996/08/25  04:30:05     77     21    209     191    227    239      1.0*   -------    -------     78   Newly inserted on 2024/05/01.; Very Poor Event; Only C3
+1996/08/26  02:25:05     73     39    179     238    120      0     -4.9*   -------    -------     81   Newly inserted on 2024/05/01.; Very Poor Event; Only C3
+1996/08/26  11:38:42    353      9    206    ----   ----   ----   ------    -------    -------    351   Newly inserted on 2024/05/01.; Very Poor Event; Only 2 points; Only C2
+1996/08/26  22:41:52    252     36    227      84    382   1333     78.3*   -------    -------    254   Newly inserted on 2024/05/01.; Very Poor Event; Only 3 points; Only C2
+1996/08/27  01:41:59    343      8    157    ----   ----   ----   ------    -------    -------    337   Newly inserted on 2024/05/01.; Very Poor Event; Only 2 points; Only C2
+1996/08/27  01:41:59     10     10    357    ----   ----   ----   ------    -------    -------     18   Newly inserted on 2024/05/01.; Very Poor Event; Only 2 points
+1996/08/27  07:30:05    251     31    159     203    115      0     -2.8*   -------    -------    254   Newly inserted on 2024/05/01.; Very Poor Event
+1996/08/27  14:37:06    285     10    153     173    134     69     -1.5*   -------    -------    288   Newly inserted on 2024/05/01.; Very Poor Event; Only C3
+1996/08/27  16:03:06    252     32    169     117    218    277      3.3*   -------    -------    251   Newly inserted on 2024/05/01.; Very Poor Event; Only C3
+1996/08/28  07:20:05    253     36    212      59    354    406      7.7*   -------    -------    255   Newly inserted on 2024/05/01.; Very Poor Event
+1996/08/28  14:07:05    263     41    187     225    149      0     -3.5*   5.6e+13    9.8e+27    257   Newly inserted on 2024/05/01.; Very Poor Event
+1996/08/28  16:09:17    259     27    182     212    152      0     -2.3*   1.1e+14    1.8e+28    259   Newly inserted on 2024/05/01.; Very Poor Event
+1996/08/29  06:35:05    262     34    193     115    264    380      6.0*   -------    -------    255   Newly inserted on 2024/05/01.; Very Poor Event
+1996/08/29  17:10:05    155      9    227    ----   ----   ----   ------    -------    -------    156   Newly inserted on 2024/05/01.; Very Poor Event; Only 2 points; Only C2
+1996/08/30  03:50:06    255     13    297     288    306    312      0.9*   -------    -------    258   Newly inserted on 2024/05/01.; Very Poor Event; Only C3
+1996/08/30  05:15:07    158     11     66      31    105    415      7.1*   -------    -------    156   Newly inserted on 2024/05/01.; Very Poor Event; Only 3 points; Only C2
+1996/08/30  11:38:43    261     23    110     162     56      0    -12.3*   -------    -------    261   Newly inserted on 2024/05/01.; Very Poor Event
+1996/08/30  22:30:05     91     32     29       8     46    114      0.5*   -------    -------     92   Newly inserted on 2024/05/01.; Very Poor Event; Only C2
+1996/08/31  11:10:05    256     64    185     223    148      0     -3.2*   -------    -------    265   Newly inserted on 2024/05/01.; Very Poor Event
+1996/08/31  17:47:52    263     79    226    ----   ----   ----   ------    -------    -------    257   Newly inserted on 2024/05/01.; Very Poor Event; Only 2 points
+1996/08/31  19:05:01     93     43    224     161    284    587     14.1*   -------    -------     94   Newly inserted on 2024/05/01.; Poor Event

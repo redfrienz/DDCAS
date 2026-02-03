@@ -1,0 +1,13 @@
+User-agent: *
+Disallow: /*.jpg$
+Disallow: /*.png$
+Disallow: /*.txt$
+Disallow: /*.mpg$
+Disallow: /stereo/
+Disallow: /images/
+Disallow: /movie/
+Disallow: /stereo/swaves/
+Disallow: /meetings/
+Disallow: /projects/
+Disallow: /CME_list/daily_movies/
+Disallow: /CME_list/UNIVERSAL/

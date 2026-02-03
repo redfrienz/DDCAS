@@ -1,0 +1,38 @@
+ ========= SOHO/LASCO CME CATALOG==========      LAST UPDATED: 2024/04/25 15:16
+ Date       Time     Central  Width  Linear   2nd order speed      Accel     Mass      Kinetic    MPA   Remarks
+                        PA           Speed  initial final   20R                        Energy                 
+
+1996/04/02  02:36:21    267     37    192     116    263    246      2.7*   7.4e+14    1.4e+29    263   Poor Event; Only C3
+1996/04/02  23:08:01    262     40    272     266    277    275      0.2*   8.3e+14    3.1e+29    262   Newly inserted on 2024/05/01.
+1996/04/03  04:31:16     80     48     28      38     18      0     -0.5*   7.4e+13    2.9e+26     79   Newly inserted on 2024/05/01.; Poor Event; Only C2
+1996/04/03  14:30:40    257     36   ----    ----   ----   ----   ------    5.3e+14*   -------    255   Very Poor Event; Only C2; Unable to measure
+1996/04/05  06:11:28    273     47    323     373    272    367     -6.7*   1.3e+15*   6.7e+29*   271   Only 3 points; Only C3
+1996/04/05  14:16:18     26      4    322     375    270      0    -13.0*   -------    -------     34   Newly inserted on 2024/05/01.; Poor Event; Only 3 points; Only C2
+1996/04/06  00:51:12    268     37    293     165    419    350      8.7*   8.8e+13*   3.8e+28*   270   Only C3
+1996/04/06  10:52:30    260     25     25      22     29     86      0.3*   3.8e+13*   1.2e+26*   260   Newly inserted on 2024/05/01.; Very Poor Event; Only C2
+1996/04/07  06:59:24    258     42    324     170    481    488      9.2*   4.3e+14    2.3e+29    269   
+1996/04/08  01:03:21    266     29    314     351    279    330     -3.4*   2.2e+12*   1.1e+27*   269   Poor Event; Only 3 points; Only C3
+1996/04/08  04:12:26    258     15    124     157     94      0     -1.3*   -------    -------    262   
+1996/04/08  07:53:42    105     22    128      90    161    227      2.0*   5.0e+13*   4.1e+27*    99   Poor Event
+1996/04/09  11:07:13    266     25     35      37     33      0     -0.3*   -------    -------    267   Newly inserted on 2024/05/01.; Very Poor Event; Only 3 points; Only C2
+1996/04/11  11:17:09    166      7    212     166    258    563     12.2*   -------    -------    164   Newly inserted on 2024/05/01.; Very Poor Event; Only 3 points; Only C2
+1996/04/11  11:17:09     88     49    272     267    278    303      0.9*   2.6e+14    9.5e+28     89   Poor Event
+1996/04/12  04:45:24    275     57    100      84    117    154      0.8*   5.2e+14*   2.6e+28*   272   Very Poor Event
+1996/04/12  16:21:55    263     55     21       6     38    117      0.6*   2.1e+14    4.6e+26    266   Newly inserted on 2024/05/01.; Very Poor Event; Only C2
+1996/04/13  00:52:12    265     39    157     143    171    190      1.0*   4.9e+13*   6.0e+27*   266   Poor Event; Only C3
+1996/04/13  04:02:02    262     46    114     114    115    116      0.0*   1.5e+13    9.7e+26    253   
+1996/04/13  11:56:56     93     26     18       5     33    154      1.0*   1.5e+13*   2.4e+25*   100   Newly inserted on 2024/05/01.; Very Poor Event; Only C2
+1996/04/14  12:57:26     97     22      7      11      3      0     -0.1*   3.3e+14    8.0e+25    101   Newly inserted on 2024/05/01.; Very Poor Event; Only C2
+1996/04/15  03:00:25     98     22     97     112     82      0     -1.4*   1.8e+14*   8.4e+27*    96   Only 3 points; Only C2
+1996/04/15  10:53:48    282     17   ----    ----   ----   ----   ------    -------    -------    275   Very Poor Event; Only C2; Unable to measure
+1996/04/16  15:34:39    101     33     89      10    162    287      3.5*   7.2e+13    2.9e+27     99   Newly inserted on 2024/05/01.; Very Poor Event
+1996/04/17  09:49:57     94     13    225     205    244    272      1.9*   -------    -------     94   Poor Event; Only C3
+1996/04/18  03:09:03    286     39     20      10     30    106      0.5*   2.8e+14    5.5e+26    283   Newly inserted on 2024/05/01.; Very Poor Event; Only C2
+1996/04/23  03:00:05    273     45     30      34     26      0     -0.4*   7.2e+13    3.3e+26    271   Newly inserted on 2024/05/01.; Very Poor Event; Only C2
+1996/04/24  13:48:52    268     54     52      54     50     44     -0.0*   8.8e+14    1.2e+28    267   Newly inserted on 2024/05/01.
+1996/04/25  11:30:16    272     68    186     162    208    189      1.1*   2.1e+15*   3.7e+29*   284   Very Poor Event; Only C3
+1996/04/26  07:21:43    273     45     32       8     55    174      1.3*   6.4e+13    3.3e+26    267   Newly inserted on 2024/05/01.; Very Poor Event; Only C2
+1996/04/27  06:13:06     95     49     18      15     20     51      0.1*   -------    -------    100   Newly inserted on 2024/05/01.; Poor Event; Only C2
+1996/04/28  03:03:33    266     23     25      21     29     71      0.2*   -------    -------    265   Newly inserted on 2024/05/01.; Very Poor Event; Only 3 points; Only C2
+1996/04/29  14:38:48   Halo    360     65    ----   ----   ----   ------    -------    -------    149   Faint; Very Poor Event; Only 2 points; Only C2
+1996/04/30  13:43:42     92     56    112      94    129    172      1.0*   5.6e+14    3.5e+28     89   

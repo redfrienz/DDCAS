@@ -1,0 +1,167 @@
+ ========= SOHO/LASCO CME CATALOG==========      LAST UPDATED: 2026/01/30 16:07
+ Date       Time     Central  Width  Linear   2nd order speed      Accel     Mass      Kinetic    MPA   Remarks
+                        PA           Speed  initial final   20R                        Energy                 
+
+2023/09/01  03:24:05   Halo    360   1339    1423   1254   1321    -12.0    -------    -------    308   
+2023/09/01  16:12:06    311     21    431     379    484    729     16.9*   1.4e+12    1.3e+27    312   Poor Event; Only C2
+2023/09/01  16:12:06    222     25    350     368    333    235     -3.8*   -------    -------    222   Poor Event
+2023/09/01  21:48:07     87     13    402     527    286      0    -47.6*   -------    -------     88   Poor Event
+2023/09/01  22:24:05    259     23    710     663    753    743      4.8*   -------    -------    245   
+2023/09/01  23:12:11    111     94    441     583    276    345     -9.9*   -------    -------    123   Fixed the MVI roll angle issue on 2026-01-30
+2023/09/02  07:12:05    231    156   1176    1353    997   1107    -25.3*   -------    -------    261   Fixed the MVI roll angle issue on 2026-01-30; Partial Halo
+2023/09/02  14:24:05     58    143    272      70    465    403      6.6*   -------    -------     26   Fixed the MVI roll angle issue on 2026-01-30; Partial Halo
+2023/09/03  00:36:07    270     88    575     669    479    503     -8.2*   -------    -------    288   Fixed the MVI roll angle issue on 2026-01-30
+2023/09/03  01:36:32    105     36    264     217    314    482      7.7*   -------    -------    111   Fixed the MVI roll angle issue on 2026-01-30; Poor Event
+2023/09/03  04:24:05     74     25    230     224    235    293      1.4*   -------    -------     84   Fixed the MVI roll angle issue on 2026-01-30; Poor Event; Only C2
+2023/09/03  04:36:05    292     27    604     603    605    611      0.4*   -------    -------    296   Fixed the MVI roll angle issue on 2026-01-30; Poor Event
+2023/09/03  05:24:05    291    196   1190    1105   1279   1241     13.1    -------    -------    301   Fixed the MVI roll angle issue on 2026-01-30; Partial Halo
+2023/09/03  07:36:05    145     65    334     288    382    406      3.4*   -------    -------    153   Fixed the MVI roll angle issue on 2026-01-30; Poor Event
+2023/09/03  09:12:10    308    249   1349    1272   1433   1378     13.0    -------    -------    302   Newly inserted on 2024/01/25; Fixed the MVI roll angle issue on 2026-01-30; Partial Halo
+2023/09/03  12:36:06    265    149    449     462    438    417     -1.6*   -------    -------    253   Fixed the MVI roll angle issue on 2026-01-30; Partial Halo
+2023/09/03  21:24:05    251     25    612     735    474    309    -18.5*   -------    -------    249   Fixed the MVI roll angle issue on 2026-01-30; Poor Event
+2023/09/04  07:36:05     66     18    189     249    132      0    -20.9*   -------    -------     65   Fixed the MVI roll angle issue on 2026-01-30; Very Poor Event; Only C2
+2023/09/04  08:12:05    322     29    335     255    423    534      9.2*   -------    -------    329   Fixed the MVI roll angle issue on 2026-01-30
+2023/09/04  13:48:05    110    100    920    1116    716    754    -28.8*   -------    -------    108   Fixed the MVI roll angle issue on 2026-01-30
+2023/09/05  06:24:05    309     78    232     195    266    336      3.2*   -------    -------    315   Fixed the MVI roll angle issue on 2026-01-30; Poor Event
+2023/09/05  14:00:05   Halo    360   1539    1328   1764   1636     38.4    1.8e+16*   2.2e+32*   309   Fixed the MVI roll angle issue on 2026-01-30
+2023/09/05  18:36:05    184     52    207      91    317    769     24.5*   -------    -------    193   Fixed the MVI roll angle issue on 2026-01-30; Poor Event; Only C2
+2023/09/05  20:36:05   Halo    360    969    1173    778    833    -30.1    -------    -------    309   Fixed the MVI roll angle issue on 2026-01-30
+2023/09/06  18:00:05    105     35    207     192    224    478      7.9*   -------    -------    108   Fixed the MVI roll angle issue on 2026-01-30; Poor Event; Only C2
+2023/09/06  19:24:05     63     82    217       0    487    409      7.1*   -------    -------     68   Fixed the MVI roll angle issue on 2026-01-30
+2023/09/07  11:24:05    105     47    312     298    328    365      1.8*   1.5e+15    7.4e+29    110   Fixed the MVI roll angle issue on 2026-01-30
+2023/09/07  13:36:29   Halo    360    310     318    301    272     -1.1*   6.8e+14*   3.3e+29*   346   Fixed the MVI roll angle issue on 2026-01-30; Poor Event
+2023/09/07  17:48:06   Halo    360    349     343    355    400      1.8*   -------    -------    312   Fixed the MVI roll angle issue on 2026-01-30; Poor Event
+2023/09/07  19:24:06     70    124    634     648    621    624     -1.2    3.4e+15*   6.7e+30*    73   Fixed the MVI roll angle issue on 2026-01-30; Partial Halo
+2023/09/08  02:00:06    128    239    303     436    155      0     -9.4*   2.5e+15*   1.2e+30*    96   Fixed the MVI roll angle issue on 2026-01-30; Partial Halo
+2023/09/08  11:36:05   Halo    360   1001    1233    748    921    -28.0    8.7e+15*   4.4e+31*   324   Fixed the MVI roll angle issue on 2026-01-30
+2023/09/08  17:24:05     42     70    423     458    387    379     -2.8*   4.2e+14    3.7e+29     31   Fixed the MVI roll angle issue on 2026-01-30
+2023/09/08  20:57:35    262     36    180     246    113      0    -15.2*   -------    -------    257   Fixed the MVI roll angle issue on 2026-01-30; Poor Event; Only C2
+2023/09/09  02:00:05    155     42    295     240    354    380      3.7*   5.0e+13    2.2e+28    156   Fixed the MVI roll angle issue on 2026-01-30; Poor Event
+2023/09/09  12:12:05    239     30    185      92    266    792     25.7*   -------    -------    236   Fixed the MVI roll angle issue on 2026-01-30; Poor Event; Only C2
+2023/09/09  21:48:06    246     35    215     212    218    254      0.8*   -------    -------    245   Fixed the MVI roll angle issue on 2026-01-30; Poor Event; Only C2
+2023/09/10  05:00:05     44      9    374     382    365    294     -2.5*   -------    -------     47   Fixed the MVI roll angle issue on 2026-01-30; Very Poor Event
+2023/09/10  05:00:05    242     33    227     277    175      0    -12.0*   -------    -------    248   Fixed the MVI roll angle issue on 2026-01-30; Poor Event; Only C2
+2023/09/10  07:48:06     80     23    200     223    175      0     -8.4*   -------    -------     85   Fixed the MVI roll angle issue on 2026-01-30; Very Poor Event; Only C2
+2023/09/10  11:48:05     54     27    526     662    383      0    -20.9*   -------    -------     58   Fixed the MVI roll angle issue on 2026-01-30; Poor Event
+2023/09/10  12:00:05    260     42    131     173     79      0     -7.4*   -------    -------    257   Fixed the MVI roll angle issue on 2026-01-30; Very Poor Event; Only C2
+2023/09/10  16:48:05    287    126    406     229    603    521      9.0    1.0e+16*   8.3e+30*   302   Fixed the MVI roll angle issue on 2026-01-30; Partial Halo
+2023/09/11  01:48:06    342     27    663     293   1007   1113     48.0    5.3e+13    1.2e+29    340   Fixed the MVI roll angle issue on 2026-01-30
+2023/09/11  01:48:06     70    166    545     591    498    484     -4.8    -------    -------     70   Fixed the MVI roll angle issue on 2026-01-30; Partial Halo
+2023/09/11  10:00:05   Halo    360    449     477    419    422     -2.1*   -------    -------    165   Fixed the MVI roll angle issue on 2026-01-30
+2023/09/11  22:36:05   Halo    360   1060    1205    929    988    -19.4    -------    -------     30   Fixed the MVI roll angle issue on 2026-01-30
+2023/09/12  00:00:06    285     81    258     185    330    377      4.7*   -------    -------    294   Fixed the MVI roll angle issue on 2026-01-30
+2023/09/12  19:12:05     91     21    528     601    460    293    -11.5*   1.2e+14    1.7e+29     95   Fixed the MVI roll angle issue on 2026-01-30; Poor Event
+2023/09/12  21:12:10    133     73    178      70    283    324      4.2*   -------    -------    141   Fixed the MVI roll angle issue on 2026-01-30; Poor Event
+2023/09/13  04:48:05     54     61    389     440    335    292     -4.5*   -------    -------     51   Fixed the MVI roll angle issue on 2026-01-30; Poor Event
+2023/09/13  11:00:05    128     17    302     172    441    820     26.8*   -------    -------    129   Fixed the MVI roll angle issue on 2026-01-30; Poor Event
+2023/09/13  13:36:27    103     34    757     770    744    731     -2.4*   -------    -------    112   Fixed the MVI roll angle issue on 2026-01-30
+2023/09/13  18:12:05     60     17    289     120    468   1610    105.1*   -------    -------     59   Fixed the MVI roll angle issue on 2026-01-30; Very Poor Event; Only C2
+2023/09/13  20:24:05    108    120    554     667    442    286    -14.9*   -------    -------    100   Fixed the MVI roll angle issue on 2026-01-30; Poor Event
+2023/09/14  04:00:05    135     23    631     714    552    459    -12.2*   -------    -------    135   Fixed the MVI roll angle issue on 2026-01-30
+2023/09/14  07:24:05   Halo    360    804     752    857    841      6.0    -------    -------    303   Fixed the MVI roll angle issue on 2026-01-30
+2023/09/14  23:12:10    118    161    268     301    234    131     -3.1*   -------    -------    115   Fixed the MVI roll angle issue on 2026-01-30; Poor Event; Partial Halo
+2023/09/15  02:48:05    347    157    239       0    577    511     10.9    -------    -------    351   Fixed the MVI roll angle issue on 2026-01-30; Partial Halo
+2023/09/15  07:12:06    274     16    358     351    364    372      0.7*   -------    -------    277   Fixed the MVI roll angle issue on 2026-01-30
+2023/09/15  07:36:05     77     23    381     477    289      0    -32.4*   -------    -------     84   Fixed the MVI roll angle issue on 2026-01-30; Poor Event; Only C2
+2023/09/15  15:12:09     67     14    439     423    457    603      7.8*   -------    -------     68   Fixed the MVI roll angle issue on 2026-01-30; Very Poor Event; Only 3 points; Only C2
+2023/09/15  19:00:05     81     55    215     226    205      0     -3.5*   -------    -------     84   Fixed the MVI roll angle issue on 2026-01-30; Only C2
+2023/09/15  23:24:06    327     29    455     415    494    556      6.1*   -------    -------    327   Fixed the MVI roll angle issue on 2026-01-30; Poor Event
+2023/09/16  06:12:05     50    146    412     278    553    534      8.5    -------    -------     34   Fixed the MVI roll angle issue on 2026-01-30; Partial Halo
+2023/09/16  09:12:10   Halo    360    703     563    861    833     15.8*   -------    -------    272   Fixed the MVI roll angle issue on 2026-01-30
+2023/09/17  01:48:05     84     73    310     274    349    441      4.9*   -------    -------    106   Fixed the MVI roll angle issue on 2026-01-30; Poor Event
+2023/09/17  06:48:05     97     35    265     154    371    656     16.8*   -------    -------    109   Fixed the MVI roll angle issue on 2026-01-30; Very Poor Event
+2023/09/17  09:24:05     71     52    440     462    420    353     -3.6*   -------    -------     81   Fixed the MVI roll angle issue on 2026-01-30; Poor Event
+2023/09/17  11:12:06     59     42    444     585    299      0    -29.0*   -------    -------     57   Fixed the MVI roll angle issue on 2026-01-30; Poor Event
+2023/09/17  12:12:05    183    214    590     281    939    829     25.3    -------    -------    208   Fixed the MVI roll angle issue on 2026-01-30; Partial Halo
+2023/09/17  15:48:06    274     16    577     403    751   1544     91.8*   -------    -------    272   Fixed the MVI roll angle issue on 2026-01-30; Poor Event; Only C2
+2023/09/17  16:36:07     90     64    284     131    418    766     23.5*   -------    -------     96   Fixed the MVI roll angle issue on 2026-01-30
+2023/09/17  20:56:51    110    273    263     182    340    459      7.3*   -------    -------    150   Fixed the MVI roll angle issue on 2026-01-30; Poor Event; Partial Halo
+2023/09/17  21:12:10    193     34    406     341    475    487      5.1*   -------    -------    192   Fixed the MVI roll angle issue on 2026-01-30; Poor Event
+2023/09/18  02:48:05    104     43    239     312    176      0     -9.7*   -------    -------    106   Fixed the MVI roll angle issue on 2026-01-30; Poor Event
+2023/09/18  07:12:06     96     87    435     397    473    577      7.4*   -------    -------     96   Fixed the MVI roll angle issue on 2026-01-30; Poor Event
+2023/09/18  11:24:05    302    214    305     239    377    388      3.8    -------    -------    328   Fixed the MVI roll angle issue on 2026-01-30; Partial Halo
+2023/09/18  14:36:06     89     52    478     475    481    482      0.3*   -------    -------     93   Fixed the MVI roll angle issue on 2026-01-30
+2023/09/18  16:00:05    188     22    282     319    239    204     -2.8*   -------    -------    184   Fixed the MVI roll angle issue on 2026-01-30; Poor Event
+2023/09/18  19:48:06     91     30    251     170    329    752     21.9*   -------    -------     94   Fixed the MVI roll angle issue on 2026-01-30; Poor Event; Only C2
+2023/09/18  20:57:25    127     79    398     458    333      0    -12.9*   -------    -------    125   Fixed the MVI roll angle issue on 2026-01-30; Poor Event
+2023/09/19  03:36:05    272     19    192     161    219    522     10.1*   -------    -------    266   Fixed the MVI roll angle issue on 2026-01-30; Very Poor Event; Only C2
+2023/09/19  04:24:07    142    100    473     457    490    547      3.7*   -------    -------    121   Fixed the MVI roll angle issue on 2026-01-30; Poor Event
+2023/09/19  06:24:06    261     55    140     130    151    266      2.2*   -------    -------    264   Fixed the MVI roll angle issue on 2026-01-30; Very Poor Event; Only C2
+2023/09/19  10:00:06    139    125    418     605    230      0    -25.5*   -------    -------    128   Fixed the MVI roll angle issue on 2026-01-30; Poor Event; Partial Halo
+2023/09/19  11:12:06    270     80    188     207    169      0     -3.3*   -------    -------    288   Fixed the MVI roll angle issue on 2026-01-30; Poor Event; Only C2
+2023/09/19  13:36:06     98     35    290     212    375    660     16.5*   -------    -------    105   Fixed the MVI roll angle issue on 2026-01-30; Poor Event
+2023/09/19  13:48:05    285     52    296     287    306    333      1.2*   -------    -------    291   Fixed the MVI roll angle issue on 2026-01-30; Poor Event
+2023/09/19  16:24:05    299     14    348     251    447    896     31.0*   -------    -------    297   Fixed the MVI roll angle issue on 2026-01-30; Poor Event; Only C2
+2023/09/19  18:24:05     55     38    194     277    100      0    -18.3*   -------    -------     56   Fixed the MVI roll angle issue on 2026-01-30; Poor Event; Only C2
+2023/09/19  20:36:05    144    114    483     533    428    449     -3.5    -------    -------    133   Fixed the MVI roll angle issue on 2026-01-30
+2023/09/19  22:00:05    284     17    197     103    284    521     11.1*   -------    -------    288   Fixed the MVI roll angle issue on 2026-01-30; Very Poor Event
+2023/09/19  22:36:05    238     36    164     221    112      0    -13.5*   -------    -------    245   Fixed the MVI roll angle issue on 2026-01-30; Poor Event; Only C2
+2023/09/19  23:12:05     79     89    383     370    395    422      1.7*   -------    -------     85   Fixed the MVI roll angle issue on 2026-01-30; Poor Event
+2023/09/20  06:12:06     86    148    368     339    399    410      2.2    -------    -------     94   Fixed the MVI roll angle issue on 2026-01-30; Partial Halo
+2023/09/20  08:24:06    280     34    367     309    423    539      8.2*   -------    -------    285   Fixed the MVI roll angle issue on 2026-01-30; Poor Event
+2023/09/20  15:05:45     37     67    199     129    269    951     37.1*   -------    -------     25   Fixed the MVI roll angle issue on 2026-01-30; Very Poor Event; Only C2
+2023/09/20  15:05:45    161    131    536     557    512    517     -1.9*   -------    -------    155   Fixed the MVI roll angle issue on 2026-01-30; Partial Halo
+2023/09/21  02:48:05    179     29    317     271    364    404      3.7*   -------    -------    176   Fixed the MVI roll angle issue on 2026-01-30
+2023/09/21  11:00:05    128    112    159       0    375    668     20.3*   -------    -------    122   Fixed the MVI roll angle issue on 2026-01-30; Poor Event
+2023/09/21  12:12:05    308     11    171     160    181    359      4.2*   -------    -------    308   Fixed the MVI roll angle issue on 2026-01-30; Very Poor Event; Only C2
+2023/09/21  12:48:06    253     68    362     212    499    837     27.8*   -------    -------    263   Fixed the MVI roll angle issue on 2026-01-30; Poor Event
+2023/09/21  13:36:05    182     84    593     647    540    535     -5.7    -------    -------    172   Fixed the MVI roll angle issue on 2026-01-30
+2023/09/21  15:48:05     63    141    474     514    428    404     -4.2    -------    -------     80   Fixed the MVI roll angle issue on 2026-01-30; Partial Halo
+2023/09/21  17:24:07    306     12    217     261    170      0    -24.9*   -------    -------    303   Fixed the MVI roll angle issue on 2026-01-30; Very Poor Event; Only C2
+2023/09/21  20:36:05    176    107    607     712    494    500    -10.6    -------    -------    166   Fixed the MVI roll angle issue on 2026-01-30
+2023/09/21  22:36:06    265     18    292     370    214      0    -12.8*   -------    -------    261   Fixed the MVI roll angle issue on 2026-01-30; Poor Event
+2023/09/22  01:25:29    208    115    307      82    517    599     14.8    -------    -------    205   Fixed the MVI roll angle issue on 2026-01-30
+2023/09/22  02:24:05     49    109    983     809   1175   1069     20.1    -------    -------     35   Fixed the MVI roll angle issue on 2026-01-30
+2023/09/22  04:26:28    122     29    312     117    487    613     15.2*   -------    -------    120   Fixed the MVI roll angle issue on 2026-01-30
+2023/09/22  07:36:06    349     86    729     492    968   1197     49.4*   -------    -------    348   Fixed the MVI roll angle issue on 2026-01-30
+2023/09/22  08:12:06    206     83    330     297    360    366      1.9    -------    -------    198   Fixed the MVI roll angle issue on 2026-01-30
+2023/09/22  09:12:09     96     19    399     454    348      0     -9.8*   -------    -------    103   Fixed the MVI roll angle issue on 2026-01-30
+2023/09/22  09:36:06    283     34    226     171    281    598     13.7*   -------    -------    290   Fixed the MVI roll angle issue on 2026-01-30; Only C2
+2023/09/22  09:48:05    334     55    199       0    395    377      6.2    -------    -------    341   Fixed the MVI roll angle issue on 2026-01-30
+2023/09/22  17:00:05    283     60    691     687    696    701      0.8*   -------    -------    299   Fixed the MVI roll angle issue on 2026-01-30
+2023/09/22  19:00:06    199     44    384     373    396    416      1.4*   -------    -------    201   Fixed the MVI roll angle issue on 2026-01-30
+2023/09/22  20:12:06    272     57    221     127    324    980     38.8*   -------    -------    267   Fixed the MVI roll angle issue on 2026-01-30; Very Poor Event; Only C2
+2023/09/22  21:24:05     92     84    429     464    394    340     -4.2*   -------    -------    108   Fixed the MVI roll angle issue on 2026-01-30
+2023/09/22  22:00:05    189     88    379     314    450    430      3.5    -------    -------    179   Fixed the MVI roll angle issue on 2026-01-30
+2023/09/23  11:48:06    281     48    237     212    264    465      7.1*   -------    -------    292   Fixed the MVI roll angle issue on 2026-01-30; Very Poor Event; Only C2
+2023/09/23  13:25:33    188     26    280     244    315    665     15.8*   -------    -------    187   Fixed the MVI roll angle issue on 2026-01-30; Very Poor Event; Only C2
+2023/09/24  02:00:05    107     14    336     264    410    519      8.9*   -------    -------    110   Fixed the MVI roll angle issue on 2026-01-30; Very Poor Event
+2023/09/24  07:36:07    291    121    426     531    316    211     -9.7*   -------    -------    292   Fixed the MVI roll angle issue on 2026-01-30; Partial Halo
+2023/09/24  09:48:06   Halo    360    663     378    955    880     26.0    -------    -------    314   Fixed the MVI roll angle issue on 2026-01-30
+2023/09/24  15:24:05    276     90    614     582    647    656      3.8*   -------    -------    284   Fixed the MVI roll angle issue on 2026-01-30
+2023/09/24  18:24:05   Halo    360    331     377    277    235     -3.6*   -------    -------    285   Fixed the MVI roll angle issue on 2026-01-30
+2023/09/25  09:36:06    163     60    130     164     90      0     -7.4*   -------    -------    167   Fixed the MVI roll angle issue on 2026-01-30; Poor Event; Only C2
+2023/09/25  23:54:06    306     15    384     248    504    553     12.2*   -------    -------    309   Fixed the MVI roll angle issue on 2026-01-30; Very Poor Event
+2023/09/27  03:24:05    337     20    185     175    195    266      1.7*   -------    -------    335   Fixed the MVI roll angle issue on 2026-01-30; Poor Event
+2023/09/27  03:24:05    249     22    263     249    277    306      1.3*   -------    -------    239   Fixed the MVI roll angle issue on 2026-01-30; Poor Event
+2023/09/27  03:48:09     43     42    235     161    315    629     15.4*   -------    -------     44   Fixed the MVI roll angle issue on 2026-01-30; Poor Event; Only C2
+2023/09/27  06:24:05     35     29    233     234    232    228     -0.1*   -------    -------     32   Fixed the MVI roll angle issue on 2026-01-30; Poor Event
+2023/09/27  07:12:22    117     23    424     489    357      0    -27.9*   -------    -------    117   Fixed the MVI roll angle issue on 2026-01-30; Poor Event
+2023/09/27  07:48:10    270     14    125     199     49      0    -28.4*   -------    -------    268   Fixed the MVI roll angle issue on 2026-01-30; Very Poor Event; Only C2
+2023/09/27  11:12:09     22    116    210     214    206    196     -0.3*   -------    -------     36   Fixed the MVI roll angle issue on 2026-01-30; Poor Event
+2023/09/27  16:24:06    147     38    139     116    163    281      2.7*   -------    -------    141   Fixed the MVI roll angle issue on 2026-01-30; Poor Event; Only C2
+2023/09/27  19:24:05     62     48    183     228    138      0    -10.3*   -------    -------     59   Fixed the MVI roll angle issue on 2026-01-30; Poor Event; Only C2
+2023/09/27  20:12:10    113     11    439     434    445    484      1.9*   -------    -------    114   Fixed the MVI roll angle issue on 2026-01-30; Poor Event; Only C2
+2023/09/27  23:12:10    108      9    347     212    468   1030     42.3*   -------    -------    113   Fixed the MVI roll angle issue on 2026-01-30; Very Poor Event; Only C2
+2023/09/28  00:35:05    122     26    512     487    538    693      9.9*   -------    -------    115   Fixed the MVI roll angle issue on 2026-01-30; Only C2
+2023/09/28  01:25:50     46     34    183     216    145      0     -9.2*   -------    -------     39   Fixed the MVI roll angle issue on 2026-01-30; Very Poor Event; Only C2
+2023/09/28  03:58:06     54     13    186     144    233    527     10.7*   -------    -------     59   Fixed the MVI roll angle issue on 2026-01-30; Very Poor Event; Only C2
+2023/09/28  04:19:06    112     22    535     553    517    377     -6.7*   -------    -------    116   Fixed the MVI roll angle issue on 2026-01-30; Only C2
+2023/09/28  06:32:05    116     30    396     425    367      0     -8.1*   -------    -------    123   Fixed the MVI roll angle issue on 2026-01-30; Only C2
+2023/09/28  08:38:05     64     38    205     254    148      0    -12.2*   -------    -------     58   Fixed the MVI roll angle issue on 2026-01-30; Poor Event; Only C2
+2023/09/28  09:27:06    122     48    455     502    411      0    -14.1*   -------    -------    123   Fixed the MVI roll angle issue on 2026-01-30; Only C2
+2023/09/28  09:41:06    264     33    193     214    173      0     -6.5*   -------    -------    270   Fixed the MVI roll angle issue on 2026-01-30; Poor Event; Only C2
+2023/09/28  21:28:05    296     17    600     531    670   1147     43.3*   -------    -------    294   Fixed the MVI roll angle issue on 2026-01-30; Very Poor Event; Only C2
+2023/09/29  08:12:05    293     10    382     492    259      0    -72.6*   -------    -------    297   Fixed the MVI roll angle issue on 2026-01-30; Very Poor Event; Only C2
+2023/09/29  12:10:05     88     26    253     279    228      0     -6.9*   -------    -------     86   Fixed the MVI roll angle issue on 2026-01-30; Poor Event; Only C2
+2023/09/29  14:23:05     56     16    291     363    215      0    -18.4*   -------    -------     46   Fixed the MVI roll angle issue on 2026-01-30; Very Poor Event; Only C2
+2023/09/29  20:41:05     79     39    178     182    174    102     -0.9*   -------    -------     81   Fixed the MVI roll angle issue on 2026-01-30; Poor Event; Only C2
+2023/09/29  22:40:05     86     41    252     307    191      0    -17.6*   -------    -------     82   Fixed the MVI roll angle issue on 2026-01-30; Very Poor Event; Only C2
+2023/09/30  03:27:06    273     12   1053    1172    934      0   -115.8*   -------    -------    274   Fixed the MVI roll angle issue on 2026-01-30; Only C2
+2023/09/30  04:16:06    146     50    376     337    418    637     12.0*   -------    -------    147   Fixed the MVI roll angle issue on 2026-01-30; Only C2
+2023/09/30  04:37:06     79     55    316     390    240      0    -20.3*   -------    -------     80   Fixed the MVI roll angle issue on 2026-01-30; Only C2
+2023/09/30  12:19:05     86     31    287     410    169      0    -53.0*   -------    -------     82   Fixed the MVI roll angle issue on 2026-01-30; Very Poor Event; Only C2
+2023/09/30  14:53:06     83     15    237     433     26      0    -73.7*   -------    -------     83   Fixed the MVI roll angle issue on 2026-01-30; Very Poor Event; Only C2
+2023/09/30  16:17:05     87     32    293     247    341    840     26.3*   -------    -------     90   Fixed the MVI roll angle issue on 2026-01-30; Poor Event; Only C2
+2023/09/30  16:45:05     89     63    374     475    267      0    -36.8*   -------    -------     80   Fixed the MVI roll angle issue on 2026-01-30; Only C2
+2023/09/30  18:44:05    241    105    417     240    604   1219     59.6*   -------    -------    234   Fixed the MVI roll angle issue on 2026-01-30; Only C2

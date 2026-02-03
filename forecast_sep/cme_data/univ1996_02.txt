@@ -1,0 +1,19 @@
+ ========= SOHO/LASCO CME CATALOG==========      LAST UPDATED: 2024/04/25 15:14
+ Date       Time     Central  Width  Linear   2nd order speed      Accel     Mass      Kinetic    MPA   Remarks
+                        PA           Speed  initial final   20R                        Energy                 
+
+1996/02/01  02:21:56     75     40     70      51     91    134      0.8*   1.7e+14    4.1e+27     81   Newly inserted on 2024/05/01.; Very Poor Event
+1996/02/02  02:45:31    268     32    251     169    339    339      4.1*   2.0e+14    6.4e+28    270   Newly inserted on 2024/05/01.; Poor Event
+1996/02/02  11:42:12    133     58     65      43     87    253      2.6*   8.8e+13    1.9e+27    131   Newly inserted on 2024/05/01.; Very Poor Event; Only C2
+1996/02/02  23:00:47    180    119     80      33    121    213      1.8*   2.5e+13    8.0e+26    164   Newly inserted on 2024/05/01.; Very Poor Event
+1996/02/03  00:07:03     83     52    306     294    317    309      0.9*   1.9e+15    9.0e+29     80   Poor Event; Only C3
+1996/02/06  06:21:31    267     43     37      71      0      0     -2.3*   3.9e+12    2.7e+25    263   Newly inserted on 2024/05/01.; Very Poor Event; Only C2
+1996/02/08  05:17:49    263     70    184     247    126      0     -6.0*   1.6e+14    2.7e+28    249   Poor Event; Only C3
+1996/02/10  02:07:40    100     43     18      18     17     11     -0.0*   4.6e+14    7.4e+26     95   Newly inserted on 2024/05/01.; Very Poor Event; Only C2
+1996/02/10  22:43:52    100     44    178     147    211    247      1.7*   2.5e+14    3.9e+28     92   Newly inserted on 2024/05/01.; Very Poor Event
+1996/02/11  07:24:11     96     48    145     129    163    196      1.0*   6.9e+13    7.3e+27     93   Newly inserted on 2024/05/01.; Poor Event
+1996/02/12  05:47:26     91     53    160     100    211    236      2.0*   1.3e+15    1.7e+29     92   Poor Event
+1996/02/17  02:06:31    279     73    317     257    378    532      9.9*   3.3e+14*   1.6e+29*   274   Very Poor Event
+1996/02/17  05:18:59     86     36    171      64    279    819     27.9*   2.1e+14*   3.1e+28*    88   Very Poor Event; Only 3 points; Only C2
+1996/02/18  01:03:59    271     29    180     140    219    337      4.1*   5.0e+12    8.2e+26    271   Newly inserted on 2024/05/01.; Very Poor Event
+1996/02/19  05:15:48     98     30    266     129    403    946     36.7*   1.3e+14*   4.6e+28*    94   Very Poor Event; Only 3 points; Only C2
