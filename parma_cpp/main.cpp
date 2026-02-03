@@ -17,9 +17,9 @@ double get511fluxCpp(double s, double r, double d);
 double calculate_sep_spectrum(double flux_100, double energy_mev, double d_depth) {
     if (energy_mev < 100.0) return 0.0;
 
-    double gamma = 3; 
+    double gamma = 1.8; 
 
-    double C = flux_100 * (gamma - 1.0) * pow(100, gamma - 1.0);
+    double C = flux_100 * (gamma - 1.0) * pow(50, gamma - 1.0);
 
     double flux_top = C * pow(energy_mev, -gamma);
 
