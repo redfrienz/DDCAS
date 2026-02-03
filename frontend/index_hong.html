@@ -37,6 +37,19 @@
       align-items: flex-end;
       gap: 8px;
     }
+    #flight-select {
+      display: grid;
+      gap: 6px;
+      padding: 8px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.04);
+    }
+    #flight-select .section-title {
+      font-size: 14px;
+      font-weight: 600;
+      opacity: 0.95;
+    }
     #ui .field {
       display: flex;
       flex-direction: column;
@@ -86,6 +99,21 @@
       z-index: 10;
       backdrop-filter: blur(6px);
     }
+    #time-ui .time-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    #toggleTimeFlow {
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid #444;
+      background: #111;
+      color: #fff;
+      cursor: pointer;
+      white-space: nowrap;
+    }
     #time-ui label {
       font-size: 12px;
       opacity: 0.8;
@@ -100,6 +128,22 @@
     }
     #time-ui input::-webkit-calendar-picker-indicator {
       filter: invert(1);
+    }
+    #radiation-panel {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      background: rgba(0, 0, 0, 0.6);
+      color: #ffffff;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      font-size: 14px;
+      display: grid;
+      gap: 8px;
+      z-index: 10;
+      backdrop-filter: blur(6px);
+      min-width: 240px;
     }
     #ui select, #ui button {
       font-size: 14px;
@@ -183,11 +227,8 @@
 
     /* === NEW: Radiation legend === */
     #legend {
-      margin-top: 6px;
       display: grid;
       gap: 6px;
-      padding-top: 6px;
-      border-top: 1px solid rgba(255,255,255,0.15);
     }
     #legend .title {
       font-size: 14px;
@@ -208,13 +249,15 @@
       opacity: 0.85;
     }
     #route-info {
-      margin-top: 6px;
+      margin-top: 8px;
       display: grid;
       gap: 4px;
-      padding-top: 6px;
-      border-top: 1px solid rgba(255,255,255,0.15);
       font-size: 12px;
       opacity: 0.9;
+      padding: 8px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.04);
     }
     #route-info .section-title {
       font-size: 14px;
@@ -229,53 +272,20 @@
     }
     #route-info .button-row {
       display: flex;
-      justify-content: flex-end;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
       margin-top: 4px;
+      flex-wrap: wrap;
     }
     #route-info button {
-      font-size: 12px;
-      padding: 4px 8px;
+      font-size: 14px;
+      padding: 6px 14px;
       border-radius: 6px;
       border: 1px solid rgba(255,255,255,0.2);
       background: rgba(255,255,255,0.1);
       color: #fff;
       cursor: pointer;
-    }
-    #log-info {
-      margin-top: 6px;
-      display: grid;
-      gap: 6px;
-      padding-top: 6px;
-      border-top: 1px solid rgba(255,255,255,0.15);
-      font-size: 12px;
-    }
-    #log-info .section-title {
-      font-size: 14px;
-      font-weight: 600;
-      opacity: 0.95;
-      margin-bottom: 2px;
-    }
-    #log-info .annual-row {
-      font-size: 13px;
-      font-weight: 600;
-    }
-    #log-info .bar {
-      height: 10px;
-      border-radius: 6px;
-      background: rgba(255,255,255,0.15);
-      overflow: hidden;
-    }
-    #log-info .fill {
-      height: 100%;
-      background: #2aa3ff;
-      width: 0%;
-      transition: width 0.2s ease;
-    }
-    #log-info .row {
-      display: flex;
-      justify-content: space-between;
-      gap: 8px;
-      opacity: 0.9;
     }
   </style>
 </head>
@@ -283,7 +293,10 @@
 <a id="brand" href="./index.html">DDCAS</a>
 <div id="time-ui">
   <label for="datetimeInput">Date & Time (GST)</label>
-  <input id="datetimeInput" type="datetime-local" lang="en" />
+  <div class="time-row">
+    <input id="datetimeInput" type="datetime-local" lang="en" step="1" />
+    <button id="toggleTimeFlow" type="button">Pause</button>
+  </div>
 </div>
 <div id="ui">
   <div id="profile">
@@ -293,24 +306,40 @@
     <a class="menu-link" href="./my_page.html">My Page</a>
     <button id="logout-button" type="button">Logout</button>
   </div>
-  <div class="row">
-    <div class="field">
-      <label for="departSelect"><span class="label-dot green"></span>Depart</label>
-      <select id="departSelect">
-        <option value="">Select</option>
-      </select>
+  <div id="flight-select">
+    <div class="section-title">Flight select</div>
+    <div class="row">
+      <div class="field">
+        <label for="departSelect"><span class="label-dot green"></span>Depart</label>
+        <select id="departSelect">
+          <option value="">Select</option>
+        </select>
+      </div>
+      <span class="arrow">→</span>
+      <div class="field">
+        <label for="arriveSelect"><span class="label-dot red"></span>Arrive</label>
+        <select id="arriveSelect">
+          <option value="">Select</option>
+        </select>
+      </div>
+      <button id="showBtn">Show</button>
     </div>
-    <span class="arrow">→</span>
-    <div class="field">
-      <label for="arriveSelect"><span class="label-dot red"></span>Arrive</label>
-      <select id="arriveSelect">
-        <option value="">Select</option>
-      </select>
+  </div>
+  <div id="route-info">
+    <div class="section-title">Flight Information</div>
+    <div class="row"><span>Average speed</span><span id="routeSpeed">900 km/h</span></div>
+    <div class="row"><span>Distance</span><span id="routeDistance">-</span></div>
+    <div class="row"><span>Flight time</span><span id="routeTime">-</span></div>
+    <div class="row"><span>Total dose</span><span id="routeDose">-</span></div>
+    <div class="button-row">
+      <button id="addToLogBtn">Add to log</button>
+      <button id="changeViewBtn" style="display:none;">Change view</button>
     </div>
-    <button id="showBtn">Show</button>
   </div>
 
-  <!-- NEW: legend -->
+</div>
+
+<div id="radiation-panel">
   <div id="legend">
     <div class="title">Radiation overlay</div>
     <div class="bar" aria-label="radiation color legend"></div>
@@ -318,31 +347,11 @@
       <span id="legendMin">min</span>
       <span id="legendMax">max</span>
     </div>
-    <div id="route-info">
-      <div class="section-title">Flight Information</div>
-      <div class="row"><span>Average speed</span><span id="routeSpeed">900 km/h</span></div>
-      <div class="row"><span>Distance</span><span id="routeDistance">-</span></div>
-      <div class="row"><span>Flight time</span><span id="routeTime">-</span></div>
-      <div class="row"><span>Total dose</span><span id="routeDose">-</span></div>
-      <div class="button-row"><button id="addToLogBtn">Add to log</button></div>
-    </div>
-    <div id="log-info">
-      <div class="section-title">Annual total</div>
-      <div class="row annual-row"><span>Total</span><span id="annualDose">0.00 uSv</span></div>
-      <div class="row">
-        <label style="display:flex; align-items:center; gap:6px;">
-          <input type="checkbox" id="toggleRadiation" checked />
-          Radiation overlay
-        </label>
-      </div>
-      <div>
-        <div class="row"><span>Public limit (1 mSv)</span><span id="publicPct">0%</span></div>
-        <div class="bar"><div id="publicFill" class="fill"></div></div>
-      </div>
-      <div>
-        <div class="row"><span>Crew limit (6 mSv)</span><span id="crewPct">0%</span></div>
-        <div class="bar"><div id="crewFill" class="fill"></div></div>
-      </div>
+    <div class="row" style="display:flex; align-items:center; gap:6px;">
+      <label style="display:flex; align-items:center; gap:6px;">
+        <input type="checkbox" id="toggleRadiation" checked />
+        Radiation overlay
+      </label>
     </div>
   </div>
 </div>
@@ -371,19 +380,80 @@ const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.05;
 controls.enablePan = false;
-controls.minDistance = 2;
+controls.minDistance = 0.6;
 controls.maxDistance = 8;
 controls.target.set(0, 0, 0);
 controls.update();
+const defaultCameraState = {
+  position: camera.position.clone(),
+  target: controls.target.clone(),
+};
+let cameraTransition = null;
 
-// BACKGROUND
+function startCameraTransition(position, target, up, durationMs = 800) {
+  cameraTransition = {
+    startTime: performance.now(),
+    durationMs,
+    startPosition: camera.position.clone(),
+    startTarget: controls.target.clone(),
+    startUp: camera.up.clone(),
+    endPosition: position.clone(),
+    endTarget: target.clone(),
+    endUp: up.clone(),
+  };
+}
+
+function updateCameraTransition() {
+  if (!cameraTransition) return false;
+  const now = performance.now();
+  const elapsed = now - cameraTransition.startTime;
+  const t = Math.min(1, elapsed / cameraTransition.durationMs);
+  const eased = 0.5 - 0.5 * Math.cos(Math.PI * t);
+
+  camera.position.lerpVectors(
+    cameraTransition.startPosition,
+    cameraTransition.endPosition,
+    eased
+  );
+  controls.target.lerpVectors(
+    cameraTransition.startTarget,
+    cameraTransition.endTarget,
+    eased
+  );
+  camera.up
+    .lerpVectors(cameraTransition.startUp, cameraTransition.endUp, eased)
+    .normalize();
+  controls.update();
+
+  if (t >= 1) {
+    cameraTransition = null;
+  }
+  return true;
+}
+
+// BACKGROUND (sky sphere that rotates with earth)
 const textureLoader = new THREE.TextureLoader();
-textureLoader.load('./texture/2k_stars.jpg', (texture) => {
-  texture.colorSpace = THREE.SRGBColorSpace;
-  texture.minFilter = THREE.NearestFilter;
-  texture.magFilter = THREE.NearestFilter;
-  scene.background = texture;
-});
+const SKY_RADIUS = 50;
+const skyTexture = textureLoader.load('./texture/8k_stars_milky_way.jpg');
+skyTexture.colorSpace = THREE.SRGBColorSpace;
+const sky = new THREE.Mesh(
+  new THREE.SphereGeometry(SKY_RADIUS, 64, 64),
+  new THREE.MeshBasicMaterial({ map: skyTexture, side: THREE.BackSide, depthWrite: false })
+);
+scene.add(sky);
+
+const sunTexture = textureLoader.load('./texture/ssun.png');
+sunTexture.colorSpace = THREE.SRGBColorSpace;
+const sunSprite = new THREE.Sprite(
+  new THREE.SpriteMaterial({
+    map: sunTexture,
+    color: 0xffffff,
+    transparent: true,
+    depthWrite: false,
+  })
+);
+sunSprite.scale.set(SKY_RADIUS * 0.12, SKY_RADIUS * 0.12, 1);
+scene.add(sunSprite);
 
 // LIGHTS
 scene.add(new THREE.AmbientLight(0xffffff, 0.4));
@@ -443,7 +513,8 @@ function updateSunFromDate(date) {
   const subsolarLon = 180 - (hours * 15);
 
   const sunDir = latLonToUnitVector(declination, subsolarLon);
-  sunLight.position.copy(sunDir.multiplyScalar(5));
+  sunLight.position.copy(sunDir.clone().multiplyScalar(5));
+  sunSprite.position.copy(sunDir.clone().multiplyScalar(SKY_RADIUS - 1));
   sunLight.target.position.set(0, 0, 0);
   sunLight.target.updateMatrixWorld();
 }
@@ -572,17 +643,88 @@ function drawRoute(route) {
   endMarker.visible = true;
 }
 
-function focusOnRoute(route) {
-  const mid = latLonToVector3(
-    (route.srcLat + route.dstLat) / 2,
-    (route.srcLon + route.dstLon) / 2,
-    1
-  ).normalize();
-  const distance = 4;
-  camera.position.copy(mid.multiplyScalar(distance));
-  camera.up.set(0, 1, 0);
-  controls.target.set(0, 0, 0);
-  controls.update();
+function setRouteCenteredView(route) {
+  const start = latLonToVector3(route.srcLat, route.srcLon, EARTH_RADIUS);
+  const end = latLonToVector3(route.dstLat, route.dstLon, EARTH_RADIUS);
+  let midUnit = start.clone().normalize().add(end.clone().normalize());
+  if (midUnit.lengthSq() < 1e-6) {
+    midUnit = start.clone().normalize();
+  }
+  midUnit.normalize();
+
+  const target = midUnit.clone().multiplyScalar(EARTH_RADIUS);
+  let radius = 0;
+  for (const p of [start, end]) {
+    radius = Math.max(radius, target.distanceTo(p));
+  }
+
+  const verticalFov = THREE.MathUtils.degToRad(camera.fov);
+  const horizontalFov = 2 * Math.atan(Math.tan(verticalFov / 2) * camera.aspect);
+  const minFov = Math.min(verticalFov, horizontalFov);
+  const distance = Math.max(EARTH_RADIUS * 1.1, (radius * 1.35) / Math.tan(minFov / 2));
+
+  const desiredPosition = target.clone().add(midUnit.multiplyScalar(distance));
+  const desiredTarget = target.clone();
+  const desiredUp = new THREE.Vector3(0, 1, 0);
+  startCameraTransition(desiredPosition, desiredTarget, desiredUp, 900);
+}
+
+function resetCameraView() {
+  if (currentRoute) {
+    setRouteCenteredView(currentRoute);
+    return;
+  }
+  startCameraTransition(
+    defaultCameraState.position.clone(),
+    defaultCameraState.target.clone(),
+    new THREE.Vector3(0, 1, 0),
+    900
+  );
+}
+
+function setRouteSideView(route) {
+  const start = latLonToVector3(route.srcLat, route.srcLon, EARTH_RADIUS);
+  const end = latLonToVector3(route.dstLat, route.dstLon, EARTH_RADIUS);
+  const startUnit = start.clone().normalize();
+  const endUnit = end.clone().normalize();
+
+  let midUnit = startUnit.clone().add(endUnit);
+  if (midUnit.lengthSq() < 1e-6) {
+    midUnit = startUnit.clone();
+  }
+  midUnit.normalize();
+
+  let planeNormal = startUnit.clone().cross(endUnit);
+  if (planeNormal.lengthSq() < 1e-6) {
+    planeNormal = new THREE.Vector3(0, 1, 0).cross(midUnit);
+  }
+  planeNormal.normalize();
+
+  const tiltRad = THREE.MathUtils.degToRad(28);
+  const viewDir = planeNormal.clone()
+    .multiplyScalar(Math.cos(tiltRad))
+    .add(midUnit.clone().multiplyScalar(Math.sin(tiltRad)))
+    .normalize();
+  const targetOffset = 0.0;
+  const target = midUnit.clone().multiplyScalar(EARTH_RADIUS + targetOffset);
+
+  let radius = 0;
+  for (const p of [start, end]) {
+    radius = Math.max(radius, target.distanceTo(p));
+  }
+
+  const verticalFov = THREE.MathUtils.degToRad(camera.fov);
+  const horizontalFov = 2 * Math.atan(Math.tan(verticalFov / 2) * camera.aspect);
+  const baseDistance = Math.max(
+    EARTH_RADIUS * 1.0,
+    (radius * 1.0) / Math.tan(horizontalFov / 2)
+  );
+  const distance = baseDistance * 0.45;
+
+  const desiredPosition = target.clone().add(viewDir.multiplyScalar(distance));
+  const desiredTarget = target.clone();
+  const desiredUp = midUnit.clone();
+  startCameraTransition(desiredPosition, desiredTarget, desiredUp, 900);
 }
 
 // UI + DATA
@@ -590,6 +732,7 @@ const departSelect = document.getElementById('departSelect');
 const arriveSelect = document.getElementById('arriveSelect');
 const showBtn = document.getElementById('showBtn');
 const datetimeInput = document.getElementById('datetimeInput');
+const toggleTimeFlow = document.getElementById('toggleTimeFlow');
 const profileBtn = document.getElementById('profileBtn');
 const profileMenu = document.getElementById('profile-menu');
 const LOG_STORAGE_KEY = 'ddcas_flight_logs';
@@ -604,15 +747,17 @@ const routeDistanceEl = document.getElementById('routeDistance');
 const routeTimeEl = document.getElementById('routeTime');
 const routeDoseEl = document.getElementById('routeDose');
 const addToLogBtn = document.getElementById('addToLogBtn');
-const annualDoseEl = document.getElementById('annualDose');
-const publicPctEl = document.getElementById('publicPct');
-const crewPctEl = document.getElementById('crewPct');
-const publicFill = document.getElementById('publicFill');
-const crewFill = document.getElementById('crewFill');
+const changeViewBtn = document.getElementById('changeViewBtn');
 const toggleRadiation = document.getElementById('toggleRadiation');
+let isRouteSideView = false;
 
 function getCurrentUser() {
   return localStorage.getItem(CURRENT_USER_KEY) || 'guest';
+}
+
+function isLoggedIn() {
+  return localStorage.getItem(LOGIN_STORAGE_KEY) === 'true' &&
+    Boolean(localStorage.getItem(CURRENT_USER_KEY));
 }
 
 function loadLogs() {
@@ -825,11 +970,72 @@ function setInitialDateTime() {
 }
 
 
+let isTimeRunning = true;
+const TIME_SCALE = 1800;
+let simulatedTime = null;
+let lastFrameTime = performance.now();
+let lastUiUpdate = 0;
+let lastRadiationMinute = null;
+
+function formatDateTimeLocalUTC(date) {
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${date.getUTCFullYear()}-${pad(date.getUTCMonth() + 1)}-${pad(date.getUTCDate())}T${pad(date.getUTCHours())}:${pad(date.getUTCMinutes())}:${pad(date.getUTCSeconds())}`;
+}
+
+function updateTimeFlowFrame(nowMs) {
+  if (!simulatedTime) {
+    simulatedTime = parseDateTimeLocalAsUTC(datetimeInput.value) || new Date();
+  }
+  const elapsedMs = nowMs - lastFrameTime;
+  lastFrameTime = nowMs;
+
+  if (!isTimeRunning) return;
+
+  simulatedTime = new Date(simulatedTime.getTime() + elapsedMs * TIME_SCALE);
+
+  updateSunFromDate(simulatedTime);
+
+  const minuteKey = Math.floor(simulatedTime.getTime() / 60000);
+  if (minuteKey !== lastRadiationMinute) {
+    updateRadiationOverlay(simulatedTime);
+    lastRadiationMinute = minuteKey;
+  }
+
+  if (nowMs - lastUiUpdate > 250) {
+    datetimeInput.value = formatDateTimeLocalUTC(simulatedTime);
+    if (currentRoute && radiationGrid) {
+      const dose = computeRouteDose(currentRoute, radiationGrid);
+      routeDistanceEl.textContent = `${dose.distanceKm.toFixed(1)} km`;
+      routeTimeEl.textContent = `${dose.hours.toFixed(2)} h`;
+      routeDoseEl.textContent = `${dose.doseMicroSv.toFixed(2)} uSv (${dose.doseSv.toExponential(3)} Sv)`;
+    }
+    lastUiUpdate = nowMs;
+  }
+}
+
+toggleTimeFlow.addEventListener('click', () => {
+  isTimeRunning = !isTimeRunning;
+  toggleTimeFlow.textContent = isTimeRunning ? 'Pause' : 'Resume';
+  lastFrameTime = performance.now();
+});
+
+document.addEventListener('keydown', (event) => {
+  if (event.code !== 'Space') return;
+  const target = event.target;
+  if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable)) {
+    return;
+  }
+  event.preventDefault();
+  toggleTimeFlow.click();
+});
+
 datetimeInput.addEventListener('change', () => {
   const value = datetimeInput.value;
   if (!value) return;
   const date = parseDateTimeLocalAsUTC(value);
   if (date && !Number.isNaN(date.getTime())) {
+    simulatedTime = date;
+    lastRadiationMinute = Math.floor(date.getTime() / 60000);
     updateSunFromDate(date);
     updateRadiationOverlay(date);
     if (currentRoute && radiationGrid) {
@@ -861,21 +1067,6 @@ const allCapitals = data.capitals.slice().sort();
 const capitalRoutes = new Map();
 const reverseCapitalRoutes = new Map();
 let currentRoute = null;
-let annualDoseMicroSv = 0;
-
-function updateAnnualUI() {
-  annualDoseEl.textContent = `${annualDoseMicroSv.toFixed(2)} uSv`;
-  const publicLimit = 1000; // 1 mSv = 1000 uSv
-  const crewLimit = 6000;   // 6 mSv = 6000 uSv
-  const publicPct = Math.min(100, (annualDoseMicroSv / publicLimit) * 100);
-  const crewPct = Math.min(100, (annualDoseMicroSv / crewLimit) * 100);
-  publicPctEl.textContent = `${publicPct.toFixed(1)}%`;
-  crewPctEl.textContent = `${crewPct.toFixed(1)}%`;
-  publicFill.style.width = `${publicPct}%`;
-  crewFill.style.width = `${crewPct}%`;
-}
-
-updateAnnualUI();
 
 for (const route of data.routes) {
   const srcCapital = data.capitalByAirport[route.src];
@@ -956,8 +1147,11 @@ showBtn.addEventListener('click', () => {
   }
 
   drawRoute(best);
-  focusOnRoute(best);
+  setRouteCenteredView(best);
   currentRoute = best;
+  isRouteSideView = false;
+  changeViewBtn.textContent = 'Change view';
+  changeViewBtn.style.display = 'inline-flex';
 
   if (radiationGrid) {
     const dose = computeRouteDose(best, radiationGrid);
@@ -971,14 +1165,29 @@ showBtn.addEventListener('click', () => {
   }
 });
 
+changeViewBtn.addEventListener('click', () => {
+  if (!currentRoute) return;
+  if (!isRouteSideView) {
+    setRouteSideView(currentRoute);
+    isRouteSideView = true;
+    changeViewBtn.textContent = 'Reset view';
+  } else {
+    resetCameraView();
+    isRouteSideView = false;
+    changeViewBtn.textContent = 'Change view';
+  }
+});
+
 addToLogBtn.addEventListener('click', () => {
   if (!currentRoute || !radiationGrid) {
     window.alert('먼저 노선을 선택하고 Show를 눌러주세요.');
     return;
   }
+  if (!isLoggedIn()) {
+    window.alert('로그인 후 Add to log를 사용할 수 있습니다.');
+    return;
+  }
   const dose = computeRouteDose(currentRoute, radiationGrid);
-  annualDoseMicroSv += dose.doseMicroSv;
-  updateAnnualUI();
 
   const dateValue = datetimeInput.value;
   const dateUTC = parseDateTimeLocalAsUTC(dateValue) || new Date();
@@ -1023,7 +1232,11 @@ document.addEventListener('click', (event) => {
 // LOOP
 function animate() {
   requestAnimationFrame(animate);
-  controls.update();
+  updateTimeFlowFrame(performance.now());
+  if (!updateCameraTransition()) {
+    controls.update();
+  }
+  sky.rotation.y = earth.rotation.y;
   renderer.render(scene, camera);
 }
 animate();
