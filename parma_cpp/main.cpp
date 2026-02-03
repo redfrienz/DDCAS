@@ -19,11 +19,11 @@ double calculate_sep_spectrum(double flux_100, double energy_mev, double d_depth
 
     double gamma = 1.8; 
 
-    double C = flux_100 * (gamma - 1.0) * pow(50, gamma - 1.0);
+    double C = flux_100 * (gamma - 1.0) * pow(100, gamma - 1.0);
 
     double flux_top = C * pow(energy_mev, -gamma);
 
-    double lambda = 50;
+    double lambda = 60;
     double attenuation = exp(-d_depth / lambda);
 
     return flux_top * attenuation;
