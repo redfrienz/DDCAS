@@ -1488,7 +1488,7 @@ function computeAlaraAlternative(route, grid) {
   }
   const feasible = candidates.filter((c) => c.distanceKm <= maxKm);
   if (feasible.length === 0) return { status: 'none' };
-  const underLimit = feasible.filter((c) => c.doseMicroSv <= 200);
+  const underLimit = feasible.filter((c) => c.doseMicroSv <= 500);
   if (underLimit.length === 0) {
     const best = feasible.reduce((acc, cur) => (cur.doseMicroSv < acc.doseMicroSv ? cur : acc), feasible[0]);
     return { status: 'cancel', best };
@@ -1510,7 +1510,7 @@ function updateAlaraUI() {
   }
 
   const originalDose = computeRouteDose(currentRoute, radiationGrid).doseMicroSv;
-  if (originalDose < 200) {
+  if (originalDose < 500) {
     alaraSection.classList.remove('active');
     alaraContent.innerHTML = '';
     clearAlaraAltLine();
